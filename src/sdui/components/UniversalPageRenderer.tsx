@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import { View, ScrollView, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import { usePage, useBuildingBlocks } from '../hooks/useStructure';
+import { usePage, useBuildingBlocks, useAppMeta } from '../hooks/useStructure';
 import { useRuntimeContext } from '../hooks/useRuntimeContext';
 import type { PageSection, SectionLayout } from '../schema/structure.schema';
 import apiClient from '../../services/apiClient';
+import DynamicTopBar from './DynamicTopBar';
 
 /**
  * UniversalPageRenderer - React Native Edition
@@ -53,6 +54,7 @@ export default function UniversalPageRenderer({ pageId }: UniversalPageRendererP
   const pageDefinition = usePage(pageId);
   const buildingBlocks = useBuildingBlocks();
   const runtimeContext = useRuntimeContext();
+  const appMeta = useAppMeta(); // Get app metadata (theme, topBarConfig)
 
   // DEBUG: Log page lookup
   if (__DEV__) {
@@ -78,16 +80,25 @@ export default function UniversalPageRenderer({ pageId }: UniversalPageRendererP
   }, [pageDefinition]);
 
   // Loading state (AFTER all hooks!)
-  if (!pageDefinition || !buildingBlocks) {
+  if (!pageDefinition || !buildingBlocks || !appMeta) {
     return <LoadingState />;
   }
 
+  const { theme, topBarConfig } = appMeta;
+
   return (
-    <ScrollView
-      style={[styles.scrollView, containerStyle]}
-      contentContainerStyle={styles.contentContainer}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={{ flex: 1, backgroundColor: theme.backgroundColor }}>
+      {/* Dynamic Top Bar (context-aware) */}
+      {topBarConfig && (
+        <DynamicTopBar config={topBarConfig} currentRoute={pageId} theme={theme} />
+      )}
+
+      {/* Scrollable Page Content */}
+      <ScrollView
+        style={[styles.scrollView, containerStyle]}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
       {/* Debug banner in development */}
       {__DEV__ && (
         <View style={styles.debugBanner}>
@@ -109,7 +120,8 @@ export default function UniversalPageRenderer({ pageId }: UniversalPageRendererP
 
       {/* Empty state if no sections */}
       {sortedSections.length === 0 && <EmptyState pageId={pageId} />}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 

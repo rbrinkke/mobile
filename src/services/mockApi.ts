@@ -23,6 +23,85 @@ const MOCK_STRUCTURE: AppStructure = {
       borderColor: '#E0E0E0',
       statusBarStyle: 'dark-content' as const,
     },
+    topBarConfig: {
+      left: {
+        type: 'icon',
+        id: 'app-logo',
+        icon: 'activity',
+        action: 'navigate://demo',
+      },
+      center: {
+        type: 'search',
+        id: 'global-search',
+        action: 'none',
+        placeholder: 'Zoek activiteiten...',
+      },
+      right: [
+        {
+          type: 'icon',
+          id: 'notifications',
+          icon: 'bell',
+          action: 'navigate://notifications',
+          badge: true,
+          badgeSource: 'api://notifications/unread-count',
+        },
+        {
+          type: 'avatar',
+          id: 'profile-avatar',
+          icon: 'user',
+          action: 'navigate://profile',
+        },
+      ],
+      contextualActions: {
+        demo: {
+          overflow: {
+            type: 'menu',
+            id: 'demo-overflow-menu',
+            icon: 'more-vertical',
+            action: 'none',
+            items: [
+              {
+                id: 'menu-activity',
+                label: 'Ga naar Activiteit',
+                icon: 'map',
+                action: 'navigate://activity',
+              },
+              {
+                id: 'menu-reset',
+                label: 'Reset Mock Data',
+                icon: 'refresh-ccw',
+                action: 'api://reset-data',
+                destructive: true,
+              },
+            ],
+          },
+        },
+        discover: {
+          filter: {
+            type: 'icon',
+            id: 'filter-action',
+            icon: 'filter',
+            action: 'bottomsheet://discovery-filters',
+          },
+        },
+        activity: {
+          overflow: {
+            type: 'menu',
+            id: 'activity-overflow-menu',
+            icon: 'more-vertical',
+            action: 'none',
+            items: [
+              {
+                id: 'menu-share',
+                label: 'Deel activiteit',
+                icon: 'share-2',
+                action: 'share://activity',
+              },
+            ],
+          },
+        },
+      },
+    },
   },
   buildingBlocks: [
     {
@@ -127,7 +206,7 @@ const MOCK_STRUCTURE: AppStructure = {
     {
       id: 'nav-demo',
       label: 'Demo',
-      icon: '🎨',
+      icon: 'home',
       pageId: 'demo',
       order: 0,
       visible: true,
@@ -135,9 +214,44 @@ const MOCK_STRUCTURE: AppStructure = {
     {
       id: 'nav-activity',
       label: 'Activiteit',
-      icon: '📍',
+      icon: 'map-pin',
       pageId: 'activity',
       order: 1,
+      visible: true,
+    },
+    {
+      id: 'nav-forme',
+      label: 'Voor mij',
+      icon: 'clipboard',
+      badgeSource: 'api://badges/nav-forme',
+      pageId: 'forme',
+      order: 2,
+      visible: true,
+    },
+    {
+      id: 'nav-discover',
+      label: 'Ontdekken',
+      icon: 'search',
+      badgeSource: 'api://badges/nav-discover',
+      pageId: 'discover',
+      order: 3,
+      visible: true,
+    },
+    {
+      id: 'nav-chats',
+      label: 'Chats',
+      icon: 'message-square',
+      badgeSource: 'api://badges/nav-chats',
+      pageId: 'chats',
+      order: 4,
+      visible: true,
+    },
+    {
+      id: 'nav-profile',
+      label: 'Profiel',
+      icon: 'user',
+      pageId: 'profile',
+      order: 5,
       visible: true,
     },
   ],
@@ -145,6 +259,7 @@ const MOCK_STRUCTURE: AppStructure = {
 
 // Mock data responses
 const MOCK_DATA: Record<string, any> = {
+  // ===== Hero & Activity Data =====
   get_demo_hero: {
     title: '🎉 SDUI Werkt!',
     subtitle: 'Backend-driven UI in React Native',
@@ -177,6 +292,21 @@ const MOCK_DATA: Record<string, any> = {
     participants: 15,
     date: '2025-11-17T07:00:00Z',
   },
+
+  // ===== Badge Counts (Bottom Navigation) =====
+  'badges/nav-forme': { count: 25 },
+  'badges/nav-discover': { count: 51 },
+  'badges/nav-chats': { count: 31 },
+  'badges/nav-demo': { count: 0 },
+  'badges/nav-activity': { count: 0 },
+  'badges/nav-profile': { count: 0 },
+
+  // ===== Badge Counts (Top Bar) =====
+  'notifications/unread-count': { count: 3 },
+  'messages/unread-count': { count: 8 },
+
+  // ===== Generic Badge Endpoints =====
+  'badge-count': { count: 5 }, // Fallback for testing
 };
 
 /**

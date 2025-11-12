@@ -12,6 +12,111 @@
       "textSecondary": "#666666",
       "borderColor": "#E0E0E0",
       "statusBarStyle": "dark-content"
+    },
+    "topBarConfig": {
+      "left": {
+        "type": "icon",
+        "id": "app-logo",
+        "icon": "activity",
+        "action": "navigate://demo"
+      },
+      "center": {
+        "type": "search",
+        "id": "global-search",
+        "action": "none",
+        "placeholder": "Zoek activiteiten..."
+      },
+      "right": [
+        {
+          "type": "icon",
+          "id": "notifications",
+          "icon": "bell",
+          "action": "navigate://notifications",
+          "badge": true,
+          "badgeSource": "api://notifications/unread-count"
+        },
+        {
+          "type": "avatar",
+          "id": "profile-avatar",
+          "icon": "user",
+          "action": "navigate://profile"
+        }
+      ],
+      "contextualActions": {
+        "demo": {
+          "overflow": {
+            "type": "menu",
+            "id": "demo-overflow-menu",
+            "icon": "more-vertical",
+            "action": "none",
+            "items": [
+              {
+                "id": "menu-activity",
+                "label": "Ga naar Activiteit",
+                "icon": "map",
+                "action": "navigate://activity"
+              },
+              {
+                "id": "menu-reset",
+                "label": "Reset Mock Data",
+                "icon": "refresh-ccw",
+                "action": "api://reset-data",
+                "destructive": true
+              }
+            ]
+          }
+        },
+        "discover": {
+          "filter": {
+            "type": "icon",
+            "id": "filter-action",
+            "icon": "filter",
+            "action": "bottomsheet://discovery-filters"
+          },
+          "overflow": {
+            "type": "menu",
+            "id": "discover-overflow-menu",
+            "icon": "more-vertical",
+            "action": "none",
+            "items": [
+              {
+                "id": "menu-map-view",
+                "label": "Kaart weergave",
+                "icon": "map",
+                "action": "navigate://map-view"
+              },
+              {
+                "id": "menu-sort",
+                "label": "Sorteer opties",
+                "icon": "sliders",
+                "action": "bottomsheet://sort-options"
+              }
+            ]
+          }
+        },
+        "activity": {
+          "overflow": {
+            "type": "menu",
+            "id": "activity-overflow-menu",
+            "icon": "more-vertical",
+            "action": "none",
+            "items": [
+              {
+                "id": "menu-share",
+                "label": "Deel activiteit",
+                "icon": "share-2",
+                "action": "share://activity"
+              },
+              {
+                "id": "menu-report",
+                "label": "Rapporteer",
+                "icon": "flag",
+                "action": "modal://report"
+              }
+            ]
+          }
+        }
+      }
     }
   },
   "buildingBlocks": [
@@ -113,7 +218,7 @@
     {
       "id": "nav-demo",
       "label": "Demo",
-      "icon": "🎨",
+      "icon": "home",
       "pageId": "demo",
       "order": 0,
       "visible": true
@@ -121,7 +226,7 @@
     {
       "id": "nav-activity",
       "label": "Activiteit",
-      "icon": "📍",
+      "icon": "map-pin",
       "pageId": "activity",
       "order": 1,
       "visible": true
@@ -129,8 +234,8 @@
     {
       "id": "nav-forme",
       "label": "Voor mij",
-      "icon": "📋",
-      "badge": 25,
+      "icon": "clipboard",
+      "badgeSource": "api://badges/nav-forme",
       "pageId": "forme",
       "order": 2,
       "visible": true
@@ -138,8 +243,8 @@
     {
       "id": "nav-discover",
       "label": "Ontdekken",
-      "icon": "🔍",
-      "badge": 51,
+      "icon": "search",
+      "badgeSource": "api://badges/nav-discover",
       "pageId": "discover",
       "order": 3,
       "visible": true
@@ -147,8 +252,8 @@
     {
       "id": "nav-chats",
       "label": "Chats",
-      "icon": "💬",
-      "badge": 31,
+      "icon": "message-square",
+      "badgeSource": "api://badges/nav-chats",
       "pageId": "chats",
       "order": 4,
       "visible": true
@@ -156,7 +261,7 @@
     {
       "id": "nav-profile",
       "label": "Profiel",
-      "icon": "👤",
+      "icon": "user",
       "pageId": "profile",
       "order": 5,
       "visible": true
