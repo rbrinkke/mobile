@@ -29,6 +29,8 @@ import DemoScreen from '../screens/DemoScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
 import ForMeScreen from '../screens/ForMeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
+import MapViewScreen from '../screens/MapViewScreen';
 
 /**
  * Fallback component for undefined pages
@@ -67,6 +69,10 @@ export const screens: Record<string, React.ComponentType<any>> = {
   discover: DiscoverScreen,
   chats: ChatsScreen,
   profile: ProfileScreen,
+
+  // Additional screens (accessed via navigate:// actions)
+  notifications: NotificationsScreen,
+  'map-view': MapViewScreen,
 
   // Fallback for undefined pages
   'page-not-found': PageNotFoundScreen,

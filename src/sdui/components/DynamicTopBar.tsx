@@ -4,7 +4,7 @@
  * Best-in-class top bar with:
  * - JSON-driven configuration
  * - Context-aware actions (different per page)
- * - Overflow menus (react-native-paper)
+ * - Custom lightweight overflow menus (zero external dependencies)
  * - Live badge counts
  * - Search bar support
  * - Feather icons
@@ -12,7 +12,7 @@
  * Used by UniversalPageRenderer to show page-specific navigation.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -23,7 +23,9 @@ import {
 } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
-import { Menu } from 'react-native-paper';
+
+// Custom components
+import OverflowMenu from '../../components/OverflowMenu';
 
 // SDUI imports
 import type { TopBarConfig, MenuAction, AppTheme } from '../schema/structure.schema';
@@ -65,9 +67,6 @@ interface DynamicMenuElementProps {
  */
 const DynamicMenuElement: React.FC<DynamicMenuElementProps> = React.memo(
   ({ element, theme }) => {
-    // State for overflow menu visibility
-    const [menuVisible, setMenuVisible] = useState(false);
-
     // Fetch live badge count (if configured)
     const { data: badgeCount = 0 } = useQuery({
       queryKey: ['badge', element.id],
@@ -133,49 +132,31 @@ const DynamicMenuElement: React.FC<DynamicMenuElementProps> = React.memo(
       }
 
       case 'menu': {
-        // Overflow menu with react-native-paper Menu
+        // Custom lightweight overflow menu (no react-native-paper dependency)
         const iconName = (element.icon || 'more-vertical') as any;
 
         return (
-          <Menu
-            visible={menuVisible}
-            onDismiss={() => setMenuVisible(false)}
+          <OverflowMenu
+            items={element.items || []}
             anchor={
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => setMenuVisible(true)}
-                activeOpacity={0.7}
-              >
+              <View style={styles.actionButton}>
                 <Feather name={iconName} size={24} color={theme.textColor} />
-              </TouchableOpacity>
+              </View>
             }
-            contentStyle={{ backgroundColor: theme.backgroundColor }}
-          >
-            {element.items?.map((item, index) => {
-              const itemIconName = (item.icon || 'circle') as any;
-              const textColor = item.destructive ? '#EF5350' : theme.textColor;
-
-              return (
-                <Menu.Item
-                  key={item.id || index}
-                  onPress={() => {
-                    setMenuVisible(false);
-                    if (item.action && item.action !== 'none') {
-                      MenuActionHandler.execute(item.action, {
-                        sourceId: item.id,
-                        parentId: element.id,
-                      });
-                    }
-                  }}
-                  title={item.label || 'Untitled'}
-                  titleStyle={{ color: textColor }}
-                  leadingIcon={() => (
-                    <Feather name={itemIconName} size={20} color={textColor} />
-                  )}
-                />
-              );
-            })}
-          </Menu>
+            onItemPress={(item) => {
+              if (item.action && item.action !== 'none') {
+                MenuActionHandler.execute(item.action, {
+                  sourceId: item.id,
+                  parentId: element.id,
+                });
+              }
+            }}
+            theme={{
+              backgroundColor: theme.backgroundColor,
+              textColor: theme.textColor,
+              borderColor: theme.borderColor,
+            }}
+          />
         );
       }
 
