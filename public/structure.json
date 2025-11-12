@@ -1,0 +1,165 @@
+{
+  "version": "1.0.0",
+  "meta": {
+    "appName": "Activity App",
+    "defaultPage": "demo",
+    "theme": {
+      "primaryColor": "#FF6B6B",
+      "secondaryColor": "#4ECDC4",
+      "backgroundColor": "#FFFFFF",
+      "surfaceColor": "#F7F7F7",
+      "textColor": "#333333",
+      "textSecondary": "#666666",
+      "borderColor": "#E0E0E0",
+      "statusBarStyle": "dark-content"
+    }
+  },
+  "buildingBlocks": [
+    {
+      "id": "hero",
+      "componentName": "HeroSection",
+      "defaultProps": {
+        "primaryColor": "#FF6B6B",
+        "secondaryColor": "#4ECDC4"
+      },
+      "description": "Hero banner with gradient background"
+    },
+    {
+      "id": "activity-card",
+      "componentName": "ActivityCard",
+      "defaultProps": {
+        "showDistance": true,
+        "showParticipants": true
+      },
+      "description": "Activity card with image and details"
+    }
+  ],
+  "pages": [
+    {
+      "id": "demo",
+      "title": "SDUI Demo",
+      "screenName": "DemoScreen",
+      "containerLayout": {
+        "flex": 1,
+        "backgroundColor": "#F7F7F7"
+      },
+      "sections": [
+        {
+          "id": "hero-section",
+          "buildingBlockId": "hero",
+          "layout": {
+            "marginTop": 0,
+            "marginBottom": 16
+          },
+          "dataSource": {
+            "queryName": "get_demo_hero",
+            "cachePolicy": {
+              "strategy": "static",
+              "staleTimeMs": 3600000
+            }
+          }
+        },
+        {
+          "id": "activity-1",
+          "buildingBlockId": "activity-card",
+          "layout": {
+            "marginBottom": 12
+          },
+          "dataSource": {
+            "queryName": "get_activity_1",
+            "cachePolicy": {
+              "strategy": "static",
+              "staleTimeMs": 3600000
+            }
+          }
+        },
+        {
+          "id": "activity-2",
+          "buildingBlockId": "activity-card",
+          "layout": {
+            "marginBottom": 12
+          },
+          "dataSource": {
+            "queryName": "get_activity_2",
+            "cachePolicy": {
+              "strategy": "static",
+              "staleTimeMs": 3600000
+            }
+          }
+        },
+        {
+          "id": "activity-3",
+          "buildingBlockId": "activity-card",
+          "layout": {
+            "marginBottom": 12
+          },
+          "dataSource": {
+            "queryName": "get_activity_3",
+            "cachePolicy": {
+              "strategy": "static",
+              "staleTimeMs": 3600000
+            }
+          }
+        }
+      ],
+      "meta": {
+        "requiresAuth": false,
+        "headerShown": true,
+        "tabBarVisible": true
+      }
+    }
+  ],
+  "navigation": [
+    {
+      "id": "nav-demo",
+      "label": "Demo",
+      "icon": "🎨",
+      "pageId": "demo",
+      "order": 0,
+      "visible": true
+    },
+    {
+      "id": "nav-activity",
+      "label": "Activiteit",
+      "icon": "📍",
+      "pageId": "activity",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": "nav-forme",
+      "label": "Voor mij",
+      "icon": "📋",
+      "badge": 25,
+      "pageId": "forme",
+      "order": 2,
+      "visible": true
+    },
+    {
+      "id": "nav-discover",
+      "label": "Ontdekken",
+      "icon": "🔍",
+      "badge": 51,
+      "pageId": "discover",
+      "order": 3,
+      "visible": true
+    },
+    {
+      "id": "nav-chats",
+      "label": "Chats",
+      "icon": "💬",
+      "badge": 31,
+      "pageId": "chats",
+      "order": 4,
+      "visible": true
+    },
+    {
+      "id": "nav-profile",
+      "label": "Profiel",
+      "icon": "👤",
+      "pageId": "profile",
+      "order": 5,
+      "visible": true
+    }
+  ]
+}
