@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import DynamicNavigator from './src/navigation/DynamicNavigator';
 import { setupSduiSystem } from './src/sdui';
 import { setAuthToken } from './src/services/apiClient';
+import { setNavigationRef } from './src/services/MenuActionHandler';
 
 // Initialize SDUI system (register building blocks)
 setupSduiSystem();
@@ -30,10 +31,23 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
+  // Navigation reference for MenuActionHandler (imperative navigation)
+  const navigationRef = useRef<NavigationContainerRef<any> | null>(null);
+
+  // Set navigation reference when ready
+  const handleNavigationReady = () => {
+    if (navigationRef.current) {
+      setNavigationRef(navigationRef.current);
+      if (__DEV__) {
+        console.log('🔗 Navigation reference set for MenuActionHandler');
+      }
+    }
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <BottomTabNavigator />
+      <NavigationContainer ref={navigationRef} onReady={handleNavigationReady}>
+        <DynamicNavigator />
         <StatusBar style="auto" />
       </NavigationContainer>
     </QueryClientProvider>

@@ -246,11 +246,161 @@ export interface PageDefinition {
 }
 
 // ============================================================================
+// Dynamic Menu System - SDUI Navigation
+// ============================================================================
+
+/**
+ * Action Protocol - Type-safe action routing system
+ *
+ * Defines all possible actions that can be triggered from menu items.
+ *
+ * Examples:
+ * - `navigate://profile` - Navigate to profile screen
+ * - `modal://create-activity` - Open create activity modal
+ * - `bottomsheet://filters` - Open filters bottom sheet
+ * - `api://badge-count` - API call for data
+ * - `share://activity-123` - Share content
+ * - `confirm://delete` - Show confirmation dialog
+ * - `none` - No action (e.g., for display-only elements)
+ */
+export type ActionProtocol =
+  | `navigate://${string}`
+  | `modal://${string}`
+  | `bottomsheet://${string}`
+  | `share://${string}`
+  | `api://${string}`
+  | `confirm://${string}`
+  | 'none';
+
+/**
+ * Menu Action Type - Visual component type
+ */
+export type MenuActionType = 'icon' | 'avatar' | 'logo' | 'search' | 'menu';
+
+/**
+ * Menu Action Style - Visual style variant
+ */
+export type MenuActionStyle = 'default' | 'fab' | 'destructive';
+
+/**
+ * Menu Action - Universal building block for navigation elements
+ *
+ * This is the fundamental unit for all menu items: buttons, tabs, overflow menus.
+ * Backend uses this to define every clickable element in the app.
+ *
+ * Example (Icon button with badge):
+ * ```json
+ * {
+ *   "type": "icon",
+ *   "id": "notifications",
+ *   "icon": "bell",
+ *   "action": "navigate://notifications",
+ *   "badge": true,
+ *   "badgeSource": "api://notifications/unread-count"
+ * }
+ * ```
+ */
+export interface MenuAction {
+  /** Visual component type */
+  type: MenuActionType;
+
+  /** Unique identifier */
+  id: string;
+
+  /** Feather icon name (e.g., 'bell', 'search', 'user') */
+  icon?: string;
+
+  /** Text label (for tabs, menu items) */
+  label?: string;
+
+  /** Action to execute when tapped */
+  action: ActionProtocol;
+
+  /** Visual style variant */
+  style?: MenuActionStyle;
+
+  // ===== Badge Support =====
+  /** Show badge indicator? */
+  badge?: boolean;
+
+  /** API endpoint for live badge count (e.g., 'api://messages/unread-count') */
+  badgeSource?: ActionProtocol;
+
+  // ===== Search-specific =====
+  /** Placeholder text for search bars */
+  placeholder?: string;
+
+  /** Is this a contextual element? (internal use) */
+  contextual?: boolean;
+
+  // ===== Menu-specific (overflow menus) =====
+  /** Child menu items (for type='menu') */
+  items?: MenuAction[];
+
+  /** Destructive action? (renders in red) */
+  destructive?: boolean;
+}
+
+/**
+ * Top Bar Configuration - Header navigation structure
+ *
+ * Defines the complete top bar of the app, including:
+ * - Static elements (logo, search, profile)
+ * - Context-aware actions (filter buttons, overflow menus per screen)
+ *
+ * Example:
+ * ```json
+ * {
+ *   "left": { "type": "logo", "icon": "activity", "action": "navigate://home" },
+ *   "center": { "type": "search", "placeholder": "Search..." },
+ *   "right": [
+ *     { "type": "icon", "icon": "bell", "badge": true, "badgeSource": "api://notifications" }
+ *   ],
+ *   "contextualActions": {
+ *     "discover": {
+ *       "filter": { "type": "icon", "icon": "filter", "action": "bottomsheet://filters" }
+ *     }
+ *   }
+ * }
+ * ```
+ */
+export interface TopBarConfig {
+  /** Left element (typically logo or back button) */
+  left?: MenuAction;
+
+  /** Center element (typically search bar or title) */
+  center?: MenuAction;
+
+  /** Right elements (typically notifications, profile, etc.) */
+  right?: MenuAction[];
+
+  /**
+   * Context-aware actions per page/screen
+   *
+   * Map of pageId -> actions that appear ONLY on that page.
+   * This allows different screens to have different toolbars.
+   *
+   * Example:
+   * - "discover" page shows filter button
+   * - "activity-detail" page shows share button
+   */
+  contextualActions: Record<string, {
+    /** Filter button (common pattern) */
+    filter?: MenuAction;
+
+    /** Overflow menu (three dots with dropdown) */
+    overflow?: MenuAction;
+  }>;
+}
+
+// ============================================================================
 // Navigation Structure
 // ============================================================================
 
 /**
- * Navigation Item - Tab Bar or Stack Navigation
+ * Navigation Item - Bottom Tab Navigation
+ *
+ * UPDATED: Now supports live badge counts via badgeSource.
  */
 export interface NavigationItem {
   /** Item ID */
@@ -259,11 +409,14 @@ export interface NavigationItem {
   /** Label to display */
   label: string;
 
-  /** Icon (emoji or icon name) */
+  /** Feather icon name (e.g., 'home', 'search', 'user') */
   icon?: string;
 
-  /** Badge count */
+  /** Static badge count (deprecated, use badgeSource instead) */
   badge?: number;
+
+  /** API endpoint for live badge count (e.g., 'api://messages/unread-count') */
+  badgeSource?: ActionProtocol;
 
   /** Target page ID */
   pageId: string;
@@ -315,6 +468,8 @@ export interface AppTheme {
  * App Structure - The complete app definition for React Native
  *
  * This is THE ONLY configuration the frontend needs.
+ *
+ * UPDATED: Now includes topBarConfig for dynamic top navigation.
  */
 export interface AppStructure {
   /** Structure version */
@@ -325,6 +480,8 @@ export interface AppStructure {
     appName: string;
     defaultPage: string;
     theme: AppTheme;
+    /** Top bar configuration (NEW) */
+    topBarConfig: TopBarConfig;
   };
 
   /** All available building blocks */

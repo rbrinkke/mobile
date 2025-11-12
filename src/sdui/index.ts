@@ -26,6 +26,12 @@ export type {
   FlexDirection,
   FlexAlign,
   FlexJustify,
+  // Dynamic Menu types (NEW)
+  ActionProtocol,
+  MenuAction,
+  MenuActionType,
+  MenuActionStyle,
+  TopBarConfig,
 } from './schema/structure.schema';
 
 export { EXAMPLE_STRUCTURE } from './schema/structure.schema';
