@@ -480,8 +480,8 @@ export interface AppStructure {
     appName: string;
     defaultPage: string;
     theme: AppTheme;
-    /** Top bar configuration (NEW) */
-    topBarConfig: TopBarConfig;
+    /** Top bar configuration (optional, for dynamic top navigation) */
+    topBarConfig?: TopBarConfig;
   };
 
   /** All available building blocks */

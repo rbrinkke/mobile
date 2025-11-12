@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { usePage, useBuildingBlocks, useAppMeta } from '../hooks/useStructure';
 import { useRuntimeContext } from '../hooks/useRuntimeContext';
 import type { PageSection, SectionLayout } from '../schema/structure.schema';
-import apiClient from '../../services/apiClient';
+import mockApi from '../../services/mockApi';
 import DynamicTopBar from './DynamicTopBar';
 
 /**
@@ -148,12 +148,12 @@ const SectionRenderer = React.memo(function SectionRenderer({
   const { data, isLoading, error } = useQuery({
     queryKey: ['section-data', section.id, section.dataSource.queryName],
     queryFn: async () => {
-      // Use real API client
+      // Use mock API in development mode
       if (__DEV__) {
         console.log(`[Section] Fetching data for: ${section.dataSource.queryName}`);
       }
 
-      return apiClient.query({
+      return mockApi.query({
         query_name: section.dataSource.queryName,
         ...section.dataSource.params,
         ...runtimeContext, // Include runtime context (user_id, etc.)

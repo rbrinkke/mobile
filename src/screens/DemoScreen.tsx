@@ -10,6 +10,6 @@ import { UniversalPageRenderer } from '../sdui';
  * Zero hardcoded UI - everything comes from the backend!
  */
 export default function DemoScreen() {
-  // Use "home" page from backend structure
-  return <UniversalPageRenderer pageId="home" />;
+  // Use "demo" page from backend structure
+  return <UniversalPageRenderer pageId="demo" />;
 }

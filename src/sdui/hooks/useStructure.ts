@@ -28,11 +28,11 @@ export function useStructure(): UseQueryResult<AppStructure> {
     queryKey: STRUCTURE_QUERY_KEY,
     queryFn: async () => {
       if (__DEV__) {
-        console.log('[useStructure] Loading from real API...');
+        console.log('[useStructure] Loading from mock API (development mode)...');
       }
 
-      // Use real API client
-      const structure = await apiClient.getStructure();
+      // Use mock API for development (no backend required)
+      const structure = await mockApi.getStructure();
 
       // Validate structure
       if (!structure.version || !structure.buildingBlocks || !structure.pages) {
@@ -51,9 +51,10 @@ export function useStructure(): UseQueryResult<AppStructure> {
       return structure;
     },
     // STATIC POLICY: Never refetch (structure rarely changes)
-    staleTime: Infinity,
+    // DEV MODE: Short cache for development flexibility
+    staleTime: __DEV__ ? 10000 : Infinity, // 10 seconds in dev, infinite in production
     gcTime: Infinity,
-    refetchOnMount: false,
+    refetchOnMount: __DEV__ ? true : false, // Reload in dev mode
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retry: 3, // Retry if loading fails (critical data)

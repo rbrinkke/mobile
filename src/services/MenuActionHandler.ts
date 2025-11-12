@@ -13,6 +13,7 @@ import { NavigationContainerRef } from '@react-navigation/native';
 import { Alert, Share } from 'react-native';
 import type { ActionProtocol } from '../sdui/schema/structure.schema';
 import apiClient from './apiClient';
+import mockApi from './mockApi';
 
 // ============================================================================
 // Global Navigation Reference Management
@@ -379,8 +380,10 @@ export class MenuActionHandler {
     const queryName = source.replace('api://', '');
 
     try {
-      // Fetch badge count from API
-      const data = await apiClient.query({ query_name: queryName });
+      // Use mock API in development mode (no backend required)
+      const data = __DEV__
+        ? await mockApi.query({ query_name: queryName })
+        : await apiClient.query({ query_name: queryName });
 
       // Expected format: { count: number }
       if (typeof data.count === 'number') {

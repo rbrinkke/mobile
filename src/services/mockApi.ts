@@ -39,11 +39,31 @@ const MOCK_STRUCTURE: AppStructure = {
       right: [
         {
           type: 'icon',
+          id: 'add-activity',
+          icon: 'plus-circle',
+          action: 'modal://create-activity',
+        },
+        {
+          type: 'icon',
+          id: 'favorites',
+          icon: 'heart',
+          action: 'navigate://favorites',
+          badge: true,
+          badgeSource: 'api://favorites/count',
+        },
+        {
+          type: 'icon',
           id: 'notifications',
           icon: 'bell',
           action: 'navigate://notifications',
           badge: true,
           badgeSource: 'api://notifications/unread-count',
+        },
+        {
+          type: 'icon',
+          id: 'settings',
+          icon: 'settings',
+          action: 'navigate://settings',
         },
         {
           type: 'avatar',
@@ -61,14 +81,44 @@ const MOCK_STRUCTURE: AppStructure = {
             action: 'none',
             items: [
               {
+                type: 'icon',
                 id: 'menu-activity',
-                label: 'Ga naar Activiteit',
-                icon: 'map',
+                label: 'Bekijk Activiteiten',
+                icon: 'map-pin',
                 action: 'navigate://activity',
               },
               {
+                type: 'icon',
+                id: 'menu-share-app',
+                label: 'Deel deze App',
+                icon: 'share-2',
+                action: 'share://app',
+              },
+              {
+                type: 'icon',
+                id: 'menu-bookmark',
+                label: 'Opgeslagen Items',
+                icon: 'bookmark',
+                action: 'navigate://bookmarks',
+              },
+              {
+                type: 'icon',
+                id: 'menu-help',
+                label: 'Help & Support',
+                icon: 'help-circle',
+                action: 'navigate://help',
+              },
+              {
+                type: 'icon',
+                id: 'menu-feedback',
+                label: 'Geef Feedback',
+                icon: 'message-circle',
+                action: 'modal://feedback',
+              },
+              {
+                type: 'icon',
                 id: 'menu-reset',
-                label: 'Reset Mock Data',
+                label: 'Reset Data',
                 icon: 'refresh-ccw',
                 action: 'api://reset-data',
                 destructive: true,
@@ -92,6 +142,7 @@ const MOCK_STRUCTURE: AppStructure = {
             action: 'none',
             items: [
               {
+                type: 'icon',
                 id: 'menu-share',
                 label: 'Deel activiteit',
                 icon: 'share-2',
@@ -304,6 +355,7 @@ const MOCK_DATA: Record<string, any> = {
   // ===== Badge Counts (Top Bar) =====
   'notifications/unread-count': { count: 3 },
   'messages/unread-count': { count: 8 },
+  'favorites/count': { count: 7 },
 
   // ===== Generic Badge Endpoints =====
   'badge-count': { count: 5 }, // Fallback for testing
