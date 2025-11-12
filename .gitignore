@@ -39,3 +39,16 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Claude Code
+.claude/
+
+# Playwright
+.playwright-mcp/
+playwright-report/
+test-results/
+
+# Test artifacts
+TEST_REPORT.md
+playwright-test-app.js
+playwright-test-detailed.js
