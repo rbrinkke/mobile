@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
 
 // Screens
-import DemoScreen from '../screens/DemoScreen';
 import ActivityScreen from '../screens/ActivityScreen';
 import ForMeScreen from '../screens/ForMeScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
@@ -39,22 +38,12 @@ export default function BottomTabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#FF6B6B', // Coral color like Meet5
+        tabBarActiveTintColor: '#FF6B6B', // Coral red - energetic and friendly
         tabBarInactiveTintColor: '#999',
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
       }}
     >
-      <Tab.Screen
-        name="Demo"
-        component={DemoScreen}
-        options={{
-          tabBarLabel: 'SDUI Demo',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="🎨" focused={focused} />
-          ),
-        }}
-      />
       <Tab.Screen
         name="Activity"
         component={ActivityScreen}

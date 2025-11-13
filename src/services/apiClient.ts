@@ -1,53 +1,64 @@
 /**
- * Real API Client for Content API
+ * API Client - Generic HTTP client with JWT authentication
  *
- * Handles communication with the backend SDUI endpoints.
+ * Professional API client for making authenticated requests to any backend.
+ * Features:
+ * - JWT token management
+ * - Request timeout handling
+ * - Type-safe methods
+ * - Development logging
  */
 
 import { API_CONFIG, buildApiUrl } from '../config/api.config';
-import type { AppStructure } from '../sdui';
 
-/**
- * JWT Token Management
- * TODO: Integrate with auth system
- */
+// ============================================================================
+// JWT Token Management
+// ============================================================================
+
 let jwtToken: string | null = null;
 
+/**
+ * Set the JWT access token for authenticated requests
+ */
 export function setAuthToken(token: string) {
   jwtToken = token;
+  if (__DEV__) {
+    console.log('🔑 Auth token set:', token.substring(0, 20) + '...');
+  }
 }
 
+/**
+ * Get the current JWT token
+ */
 export function getAuthToken(): string | null {
   return jwtToken;
 }
 
+/**
+ * Clear the JWT token (logout)
+ */
 export function clearAuthToken() {
   jwtToken = null;
+  if (__DEV__) {
+    console.log('🔓 Auth token cleared');
+  }
 }
 
+// ============================================================================
+// Authenticated Fetch
+// ============================================================================
+
 /**
- * Make authenticated API request
+ * Make authenticated API request with automatic JWT injection
  */
 async function authenticatedFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const headers = new Headers(options.headers);
 
-  // Debug logging
-  if (__DEV__) {
-    console.log('[API] authenticatedFetch called');
-    console.log('[API] jwtToken available:', !!jwtToken);
-    console.log('[API] jwtToken value:', jwtToken ? jwtToken.substring(0, 20) + '...' : 'null');
-  }
-
   // Add JWT token if available
   if (jwtToken) {
     headers.set('Authorization', `Bearer ${jwtToken}`);
-    if (__DEV__) {
-      console.log('[API] Authorization header set');
-    }
-  } else {
-    if (__DEV__) {
-      console.warn('[API] WARNING: No JWT token available!');
-    }
+  } else if (__DEV__) {
+    console.warn('[API] No JWT token available');
   }
 
   // Add content type
@@ -58,6 +69,10 @@ async function authenticatedFetch(url: string, options: RequestInit = {}): Promi
   const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.requestTimeout);
 
   try {
+    if (__DEV__) {
+      console.log(`[API] ${options.method || 'GET'} ${url}`);
+    }
+
     const response = await fetch(url, {
       ...options,
       headers,
@@ -75,20 +90,36 @@ async function authenticatedFetch(url: string, options: RequestInit = {}): Promi
   }
 }
 
+// ============================================================================
+// API Client
+// ============================================================================
+
 /**
- * Real API Client
+ * Generic API Client with common HTTP methods
+ *
+ * Usage:
+ * ```typescript
+ * // GET request
+ * const data = await apiClient.get('/api/users/123');
+ *
+ * // POST request
+ * const result = await apiClient.post('/api/users', { name: 'John' });
+ *
+ * // With query params
+ * const data = await apiClient.get('/api/search', { q: 'react native' });
+ * ```
  */
 export const apiClient = {
   /**
-   * GET /api/sdui/structure
-   *
-   * Fetches the complete app structure from the backend.
+   * GET request
    */
-  async getStructure(): Promise<AppStructure> {
-    const url = buildApiUrl('/api/sdui/structure');
+  async get<T = any>(endpoint: string, params?: Record<string, any>): Promise<T> {
+    let url = buildApiUrl(endpoint);
 
-    if (__DEV__) {
-      console.log('[API] GET /api/sdui/structure');
+    // Add query params if provided
+    if (params) {
+      const queryParams = new URLSearchParams(params);
+      url = `${url}?${queryParams.toString()}`;
     }
 
     const response = await authenticatedFetch(url, {
@@ -97,58 +128,85 @@ export const apiClient = {
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`Failed to fetch structure: ${response.status} ${error}`);
+      throw new Error(`GET ${endpoint} failed: ${response.status} ${error}`);
     }
 
-    const structure = (await response.json()) as AppStructure;
-
-    if (__DEV__) {
-      console.log('[API] Structure loaded:', {
-        version: structure.version,
-        pages: structure.pages?.length || 0,
-        buildingBlocks: structure.buildingBlocks?.length || 0,
-      });
-    }
-
-    return structure;
+    return response.json();
   },
 
   /**
-   * GET /api/sdui/read?query_name={name}
-   *
-   * Fetches data for a specific query.
+   * POST request
    */
-  async query(params: { query_name: string; [key: string]: any }): Promise<any> {
-    const { query_name, ...otherParams } = params;
-
-    // Build query string
-    const queryParams = new URLSearchParams({
-      query_name,
-      ...otherParams,
-    });
-
-    const url = buildApiUrl(`/api/sdui/read?${queryParams.toString()}`);
-
-    if (__DEV__) {
-      console.log(`[API] GET /api/sdui/read?query_name=${query_name}`);
-    }
+  async post<T = any>(endpoint: string, body?: any): Promise<T> {
+    const url = buildApiUrl(endpoint);
 
     const response = await authenticatedFetch(url, {
-      method: 'GET',
+      method: 'POST',
+      body: body ? JSON.stringify(body) : undefined,
     });
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`Query failed (${query_name}): ${response.status} ${error}`);
+      throw new Error(`POST ${endpoint} failed: ${response.status} ${error}`);
     }
 
-    const data = await response.json();
+    return response.json();
+  },
 
-    if (__DEV__) {
-      console.log(`[API] Query data received for ${query_name}:`, Object.keys(data));
+  /**
+   * PUT request
+   */
+  async put<T = any>(endpoint: string, body?: any): Promise<T> {
+    const url = buildApiUrl(endpoint);
+
+    const response = await authenticatedFetch(url, {
+      method: 'PUT',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`PUT ${endpoint} failed: ${response.status} ${error}`);
     }
 
-    return data;
+    return response.json();
+  },
+
+  /**
+   * DELETE request
+   */
+  async delete<T = any>(endpoint: string): Promise<T> {
+    const url = buildApiUrl(endpoint);
+
+    const response = await authenticatedFetch(url, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`DELETE ${endpoint} failed: ${response.status} ${error}`);
+    }
+
+    return response.json();
+  },
+
+  /**
+   * PATCH request
+   */
+  async patch<T = any>(endpoint: string, body?: any): Promise<T> {
+    const url = buildApiUrl(endpoint);
+
+    const response = await authenticatedFetch(url, {
+      method: 'PATCH',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`PATCH ${endpoint} failed: ${response.status} ${error}`);
+    }
+
+    return response.json();
   },
 };
 
