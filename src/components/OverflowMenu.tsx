@@ -24,7 +24,27 @@ import {
   Animated,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import type { MenuAction } from '../sdui/schema/structure.schema';
+
+// ============================================================================
+// Menu Action Type
+// ============================================================================
+
+export interface MenuAction {
+  /** Unique identifier */
+  id: string;
+
+  /** Display label */
+  label: string;
+
+  /** Feather icon name */
+  icon?: string;
+
+  /** Mark as destructive action (red styling) */
+  destructive?: boolean;
+
+  /** Action type or custom data */
+  action?: string;
+}
 
 // ============================================================================
 // OverflowMenu Props
