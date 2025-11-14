@@ -1,0 +1,54 @@
+# Search and Filter Flow
+#
+# Tests:
+# - Search functionality
+# - Filter by category
+# - Filter by location radius
+#
+# Run: maestro test .maestro/flows/search-and-filter.yaml
+
+appId: com.activityapp
+---
+# Launch app
+- launchApp
+
+# Navigate to Discover
+- tapOn: "Discover"
+
+# Test search
+- tapOn:
+    id: "search-input"
+- inputText: "football"
+- waitForAnimationToEnd
+- assertVisible: "football"  # Search results
+
+# Clear search
+- tapOn:
+    id: "clear-search-button"
+
+# Test category filter
+- tapOn:
+    id: "filter-button"
+- tapOn: "Sports"  # Category chip
+- waitForAnimationToEnd
+- tapOn: "Apply Filters"
+
+# Verify filtered results
+- assertVisible: "Sports"
+
+# Test radius filter
+- tapOn:
+    id: "filter-button"
+- tapOn:
+    id: "radius-slider"
+- swipe:
+    direction: RIGHT
+    distance: 50%
+- tapOn: "Apply Filters"
+
+# Verify radius applied
+- assertVisible:
+    id: "radius-indicator"
+
+# Success!
+- assertTrue: true

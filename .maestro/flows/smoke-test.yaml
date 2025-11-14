@@ -1,0 +1,33 @@
+# Smoke Test - Basic App Functionality
+#
+# Tests:
+# - App launches successfully
+# - Navigation works
+# - Basic UI elements visible
+#
+# Run: maestro test .maestro/flows/smoke-test.yaml
+
+appId: com.activityapp
+---
+# Launch app
+- launchApp
+
+# Verify app launched
+- assertVisible: "Activity"  # Bottom tab
+- assertVisible: "For Me"
+- assertVisible: "Discover"
+- assertVisible: "Chats"
+- assertVisible: "Profile"
+
+# Test bottom tab navigation
+- tapOn: "Discover"
+- assertVisible: "Discover"  # Screen title
+
+- tapOn: "Profile"
+- assertVisible: "Profile"
+
+- tapOn: "Activity"
+- assertVisible: "Activity"
+
+# Success!
+- assertTrue: true

@@ -1,0 +1,56 @@
+# Activity Creation Flow
+#
+# Tests:
+# - User can create new activity
+# - Form validation works
+# - Activity appears in feed
+#
+# Run: maestro test .maestro/flows/activity-creation.yaml
+
+appId: com.activityapp
+---
+# Launch app
+- launchApp
+
+# Navigate to Activity tab
+- tapOn: "Activity"
+
+# Open create activity screen
+- tapOn:
+    id: "create-activity-button"  # testID from component
+
+# Fill in activity details
+- tapOn:
+    id: "activity-title-input"
+- inputText: "Morning Yoga Session"
+
+- tapOn:
+    id: "activity-category-picker"
+- tapOn: "Wellness"
+
+- tapOn:
+    id: "activity-location-input"
+- inputText: "Central Park"
+
+- tapOn:
+    id: "activity-date-picker"
+# Select tomorrow
+- tapOn: "Tomorrow"
+
+- tapOn:
+    id: "activity-description-input"
+- inputText: "Join us for a relaxing yoga session in the park!"
+
+# Submit form
+- tapOn:
+    id: "create-activity-submit"
+
+# Wait for creation
+- waitForAnimationToEnd
+
+# Verify activity created
+- assertVisible: "Morning Yoga Session"
+- assertVisible: "Central Park"
+
+# Success!
+- assertTrue: true

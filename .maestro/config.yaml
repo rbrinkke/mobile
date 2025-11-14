@@ -1,0 +1,15 @@
+# Maestro Configuration
+#
+# Best-in-class E2E testing for React Native (2024-2025 standard)
+#
+# Installation:
+# curl -Ls "https://get.maestro.mobile.dev" | bash
+#
+# Usage:
+# maestro test .maestro/flows/     # Run all tests
+# maestro test .maestro/flows/login.yaml   # Run specific test
+# maestro studio                   # Interactive test builder
+#
+# Documentation: https://maestro.mobile.dev/
+
+appId: com.activityapp  # Change to your app's bundle ID

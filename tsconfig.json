@@ -1,6 +1,36 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@features/*": ["src/features/*"],
+      "@shared/*": ["src/shared/*"],
+      "@api/*": ["src/api/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@store/*": ["src/store/*"],
+      "@config/*": ["src/config/*"],
+      "@assets/*": ["assets/*"]
+    },
+    // Explicit strict flags (some implied by "strict" but specified for clarity)
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    
+    // Additional strict flags for production-ready code
+    "noImplicitReturns": true,           // ✅ Ensures all code paths return a value
+    "noFallthroughCasesInSwitch": true,  // ✅ Prevents switch statement bugs
+    "noUncheckedIndexedAccess": true,    // ✅ CRITICAL: Array safety (items[0] is T | undefined)
+    
+    // Code quality flags
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": true,  // ✅ Safer object access
+    "allowUnusedLabels": false,          // ✅ Prevent unused labels
+    "allowUnreachableCode": false        // ✅ Prevent dead code
   }
 }

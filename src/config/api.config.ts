@@ -9,7 +9,7 @@
 export const API_CONFIG = {
   // Backend API URL - CHANGE THIS to your local IP or backend URL
   apiUrl: __DEV__
-    ? 'http://localhost:8002'  // Development - Content API (use your machine's IP for physical devices)
+    ? 'http://localhost:8000'  // Development - Auth API (use your machine's IP for physical devices)
     : 'https://api.activity-app.com',  // Production
 
   // Timeouts
