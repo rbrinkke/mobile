@@ -1,8 +1,7 @@
 /**
  * NotificationsScreen - Notifications placeholder
  *
- * Professional placeholder screen for notifications.
- * In production, this would use UniversalPageRenderer with a notifications pageId.
+ * Professional placeholder screen for notifications with mock data.
  */
 
 import React from 'react';
@@ -85,7 +84,7 @@ export default function NotificationsScreen() {
         <View style={styles.placeholderInfo}>
           <Feather name="info" size={20} color="#999" />
           <Text style={styles.placeholderText}>
-            Dit is een placeholder scherm. In productie zou dit via SDUI worden gerenderd.
+            Dit is een placeholder scherm met mock data.
           </Text>
         </View>
       </ScrollView>

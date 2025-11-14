@@ -14,8 +14,8 @@ test.describe('Expanded Menu System Showcase', () => {
     // Navigate to the app
     await page.goto('http://localhost:8081');
 
-    // Wait for Demo screen to load fully
-    await page.waitForSelector('text=SDUI Demo', { timeout: 15000 });
+    // Wait for Activity screen to load fully
+    await page.waitForSelector('text=Activiteit', { timeout: 15000 });
 
     // Wait an additional moment for all icons to render
     await page.waitForTimeout(2000);
@@ -47,8 +47,8 @@ test.describe('Expanded Menu System Showcase', () => {
     // Method 2: Check for specific icon accessibility labels or test IDs
     // (These would need to be added to the TopBar component)
 
-    // Method 3: Verify the Demo screen header is present
-    const demoHeader = await page.locator('text=SDUI Demo').isVisible();
+    // Method 3: Verify the Activity screen header is present
+    const demoHeader = await page.locator('text=Activiteit').isVisible();
     expect(demoHeader).toBe(true);
 
     console.log('✅ Top bar verification complete');
