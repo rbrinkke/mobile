@@ -619,6 +619,7 @@ Available MCP servers for autonomous development assistance:
 **Operations**: `init_project`, `upgrade_version`, `install_dependencies`, `configure_metro`, `setup_typescript`
 **Use when**: Creating new RN projects, upgrading React Native versions, resolving dependency conflicts
 **Workflow automation**: Handles complex upgrade paths, applies codemods, updates native configurations
+**Package**: react-native-upgrader-mcp (NOT react-native-mcp which is empty)
 
 ### expo-docs
 **Capability**: Offline Expo documentation search, API reference lookup, versioned documentation access
