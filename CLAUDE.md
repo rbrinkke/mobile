@@ -562,6 +562,94 @@ export default function MyComponent({ title }: Props) {
 const styles = StyleSheet.create({ });
 ```
 
+## MCP Server Tools
+
+Available MCP servers for autonomous development assistance:
+
+### react-analyzer
+**Capability**: AST-based component analysis, performance detection, accessibility validation
+**Trigger**: Component optimization, performance auditing, React best practices verification
+**Operations**: `analyze_component`, `detect_antipatterns`, `suggest_optimizations`, `check_accessibility`
+**Use when**: Reviewing component quality, detecting performance issues, validating React patterns
+
+### react-mcp
+**Capability**: React development utilities, hook generation, component scaffolding
+**Trigger**: Component creation, custom hook implementation, React pattern implementation
+**Operations**: `create_component`, `generate_hook`, `scaffold_context`, `implement_pattern`
+**Use when**: Generating React code, implementing React patterns, creating reusable hooks
+
+### shadcn-ui
+**Capability**: shadcn/ui component library integration, component composition
+**Trigger**: UI component implementation requiring shadcn/ui components
+**Operations**: `add_component`, `list_components`, `get_component_code`, `compose_components`
+**Use when**: Building UI with shadcn/ui design system, need pre-built accessible components
+
+### v0-mcp
+**Capability**: Vercel v0 AI-powered design-to-code conversion
+**Trigger**: Complex UI implementation from design requirements, rapid prototyping
+**Operations**: `generate_ui`, `convert_design`, `create_component_from_prompt`
+**Use when**: Converting design specifications to code, rapid UI prototyping, complex layouts
+**Note**: Requires V0_API_KEY environment variable
+
+### mock-data
+**Capability**: Realistic test data generation using Faker.js
+**Trigger**: Test data requirements, mock API responses, fixture generation
+**Operations**: `generate_user`, `generate_address`, `generate_profile`, `generate_dataset`
+**Use when**: Creating test fixtures, populating development database, mocking API responses
+**Data types**: Names, addresses, emails, phone numbers, dates, images, lorem ipsum
+
+### rest-api-tester
+**Capability**: HTTP endpoint testing, API validation, response inspection
+**Trigger**: API endpoint verification, integration testing, backend connectivity validation
+**Operations**: `test_endpoint`, `validate_response`, `check_status`, `measure_performance`
+**Use when**: Testing backend APIs, validating integrations, debugging network requests
+**Config**: REST_BASE_URL environment variable (default: http://localhost:8000)
+
+## MCP Server Usage Patterns
+
+**Component Quality Assurance**:
+```
+Trigger: react-analyzer
+Operation: analyze_component(src/screens/ActivityScreen.tsx)
+Expected output: Performance metrics, antipatterns, accessibility violations
+Follow-up: Apply suggested optimizations, fix detected issues
+```
+
+**UI Component Generation**:
+```
+Trigger: shadcn-ui OR v0-mcp
+Decision: shadcn-ui for design system components, v0-mcp for custom layouts
+Operation: add_component(name) OR generate_ui(prompt)
+Expected output: Component code, dependencies, usage examples
+```
+
+**Test Data Creation**:
+```
+Trigger: mock-data
+Operation: generate_dataset(type, count, locale)
+Expected output: JSON array of realistic data matching schema
+Use case: Populate screens during development, create test fixtures
+```
+
+**API Integration Validation**:
+```
+Trigger: rest-api-tester
+Operation: test_endpoint(method, path, headers, body)
+Expected output: Status code, response body, performance metrics
+Use case: Verify backend connectivity, validate response structure
+```
+
+## MCP Server Decision Matrix
+
+| Task | Primary MCP | Alternative | Rationale |
+|------|-------------|-------------|-----------|
+| Component analysis | react-analyzer | - | AST-based, React-specific rules |
+| Component generation | react-mcp | v0-mcp | react-mcp for patterns, v0 for complex UI |
+| UI from design | v0-mcp | shadcn-ui | v0 for custom, shadcn for design system |
+| Test data | mock-data | - | Faker.js integration, locale support |
+| API testing | rest-api-tester | - | Direct HTTP testing, timing metrics |
+| Design system | shadcn-ui | - | Pre-built accessible components |
+
 ## Additional Resources
 
 - **Expo Docs:** https://docs.expo.dev/
