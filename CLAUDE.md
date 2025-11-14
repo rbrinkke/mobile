@@ -720,6 +720,41 @@ Use case: Android-specific optimization, accessibility compliance
 | Simulator automation | expo-mcp | - | Device control, screenshot capture |
 | Version upgrades | react-native-mcp | - | Complex migration paths, codemods |
 
+## AIRIS MCP Gateway (Unified Access)
+
+**Purpose**: Single entrypoint to 25+ MCP servers with 75-90% token reduction via OpenMCP schema partitioning
+
+**Configuration**: `/home/rob/.claude/mcp.json` points to `http://localhost:9400/api/v1/mcp/sse`
+
+**Core Performance MCPs** (via gateway):
+- **Serena**: Semantic code understanding, 2-3x faster analysis, project memory, LSP integration
+- **Sequential**: Multi-step reasoning, 30-50% token reduction, hypothesis testing, architectural analysis
+- **Context7**: Official library documentation, version-specific patterns, curated API references
+- **Tavily**: Real-time web search, deep research capability, current information retrieval
+- **Morphllm**: Bulk code transformations, pattern-based editing, style enforcement across files
+- **Mindbase**: Semantic conversation search, cross-session learning, memory persistence
+- **+19 more specialized MCPs**: See http://localhost:9400/api/mcp/servers for full list
+
+**Activation**: Requires Claude Code restart to load gateway connection
+
+**Usage pattern**:
+```
+Complex analysis → Sequential MCP (via gateway)
+Symbol operations → Serena MCP (via gateway)
+Official docs → Context7 MCP (via gateway)
+Current info → Tavily MCP (via gateway)
+Bulk refactoring → Morphllm MCP (via gateway)
+```
+
+**Performance benefits**:
+- Single gateway reduces connection overhead
+- Schema partitioning: 75-90% token reduction
+- Parallel MCP execution capability
+- Unified error handling and retry logic
+- Automatic MCP discovery and routing
+
+**Services status**: Check with `docker ps | grep airis-mcp-gateway`
+
 ## Additional Resources
 
 - **Expo Docs:** https://docs.expo.dev/
