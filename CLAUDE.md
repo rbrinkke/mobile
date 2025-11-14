@@ -605,6 +605,35 @@ Available MCP servers for autonomous development assistance:
 **Use when**: Testing backend APIs, validating integrations, debugging network requests
 **Config**: REST_BASE_URL environment variable (default: http://localhost:8000)
 
+### expo-mcp
+**Capability**: Expo SDK automation, iOS/Android simulator control, React Native DevTools integration
+**Trigger**: Expo development server interaction, simulator automation, screenshot capture, UI testing
+**Operations**: `start_server`, `open_simulator`, `take_screenshot`, `tap_element`, `find_by_testid`, `reload_app`
+**Use when**: Automating Expo workflows, testing on simulators, capturing UI states, debugging native modules
+**Native features**: Requires local Expo dev server running, provides device control and DevTools access
+**Platform support**: iOS simulator, Android emulator, physical devices via Expo Go
+
+### react-native-mcp
+**Capability**: React Native project lifecycle management, version upgrades, dependency resolution
+**Trigger**: Project initialization, RN version migration, package management, build configuration
+**Operations**: `init_project`, `upgrade_version`, `install_dependencies`, `configure_metro`, `setup_typescript`
+**Use when**: Creating new RN projects, upgrading React Native versions, resolving dependency conflicts
+**Workflow automation**: Handles complex upgrade paths, applies codemods, updates native configurations
+
+### expo-docs
+**Capability**: Offline Expo documentation search, API reference lookup, versioned documentation access
+**Trigger**: Expo SDK API queries, module usage examples, configuration reference, troubleshooting
+**Operations**: `search_docs`, `get_api_reference`, `find_examples`, `get_config_schema`
+**Use when**: Need Expo-specific documentation, offline development, version-specific API reference
+**Index**: 496+ documentation files cached locally, smart semantic search, context-aware suggestions
+
+### android-ui-mcp
+**Capability**: AI-powered UI analysis for React Native Android, layout inspection, accessibility audit
+**Trigger**: Android-specific UI validation, layout debugging, performance profiling, accessibility compliance
+**Operations**: `analyze_layout`, `check_accessibility`, `detect_performance_issues`, `validate_android_patterns`
+**Use when**: Android UI optimization, accessibility validation, platform-specific bug detection
+**Platform**: Android-focused, complements expo-mcp for cross-platform testing
+
 ## MCP Server Usage Patterns
 
 **Component Quality Assurance**:
@@ -639,6 +668,40 @@ Expected output: Status code, response body, performance metrics
 Use case: Verify backend connectivity, validate response structure
 ```
 
+**Expo Development Automation**:
+```
+Trigger: expo-mcp
+Operation: start_server(), open_simulator(platform), take_screenshot(filename)
+Expected output: Dev server status, simulator launch confirmation, screenshot file path
+Use case: Automated testing workflows, UI state capture, simulator control
+Prerequisite: Expo dev server must be running locally
+```
+
+**React Native Project Management**:
+```
+Trigger: react-native-mcp
+Operation: upgrade_version(target_version), install_dependencies(packages)
+Expected output: Migration report, dependency tree, configuration changes
+Use case: Version upgrades, dependency resolution, project scaffolding
+```
+
+**Expo Documentation Lookup**:
+```
+Trigger: expo-docs
+Operation: search_docs(query), get_api_reference(module_name)
+Expected output: Relevant documentation sections, API signatures, usage examples
+Use case: Offline development, version-specific API lookup, troubleshooting
+Cache: 496+ files indexed locally
+```
+
+**Android UI Validation**:
+```
+Trigger: android-ui-mcp
+Operation: analyze_layout(screen_path), check_accessibility(component)
+Expected output: Layout issues, accessibility violations, performance bottlenecks
+Use case: Android-specific optimization, accessibility compliance
+```
+
 ## MCP Server Decision Matrix
 
 | Task | Primary MCP | Alternative | Rationale |
@@ -649,6 +712,12 @@ Use case: Verify backend connectivity, validate response structure
 | Test data | mock-data | - | Faker.js integration, locale support |
 | API testing | rest-api-tester | - | Direct HTTP testing, timing metrics |
 | Design system | shadcn-ui | - | Pre-built accessible components |
+| Expo workflows | expo-mcp | - | Official Expo integration, simulator control |
+| RN project management | react-native-mcp | - | Automated upgrades, dependency resolution |
+| Expo documentation | expo-docs | - | Offline access, 496+ files indexed |
+| Android UI analysis | android-ui-mcp | - | Platform-specific validation |
+| Simulator automation | expo-mcp | - | Device control, screenshot capture |
+| Version upgrades | react-native-mcp | - | Complex migration paths, codemods |
 
 ## Additional Resources
 
