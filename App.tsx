@@ -18,6 +18,9 @@ import OfflineBanner from '@shared/components/OfflineBanner';
 // Debug Panel (DEV only)
 import { DebugPanel } from '@shared/components/DebugPanel';
 
+// Dev Tools (DEV only) - Makes devTools available globally
+import '@utils/devTools';
+
 // Create query client for TanStack Query
 const queryClient = new QueryClient({
   defaultOptions: {
