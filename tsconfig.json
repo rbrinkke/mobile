@@ -9,7 +9,8 @@
       "@shared/*": ["src/shared/*"],
       "@api/*": ["src/api/*"],
       "@navigation/*": ["src/navigation/*"],
-      "@store/*": ["src/store/*"],
+      "@stores/*": ["src/stores/*"],
+      "@services/*": ["src/services/*"],
       "@config/*": ["src/config/*"],
       "@assets/*": ["assets/*"]
     },

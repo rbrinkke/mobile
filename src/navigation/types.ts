@@ -1,11 +1,19 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 /**
- * Root navigation parameter list
- * Define all screens and their required/optional parameters
+ * Root navigation parameter list - Best-in-Class Type Safety
+ *
+ * Architecture:
+ * - Auth: Authentication flow (login, register, verify)
+ * - Main: Main app with bottom tabs (wrapped navigator)
+ * - Modal screens: Overlays and detail screens
  */
 export type RootStackParamList = {
-  // Bottom tabs
+  // Root level screens
+  Auth: undefined; // Authentication flow
+  Main: undefined; // Main app (bottom tabs)
+
+  // Bottom tab screens (accessed via Main navigator)
   Activity: undefined;
   ForMe: undefined;
   Discover: undefined;

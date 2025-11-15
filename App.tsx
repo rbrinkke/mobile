@@ -7,7 +7,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 
 // Navigation
-import MainNavigator from './src/navigation/MainNavigator';
+import RootNavigator from './src/navigation/RootNavigator';
+
+// Error Boundary
+import { ErrorBoundary } from '@shared/components/ErrorBoundary';
+
+// Offline Banner
+import OfflineBanner from '@shared/components/OfflineBanner';
 
 // Debug Panel (DEV only)
 import { DebugPanel } from '@shared/components/DebugPanel';
@@ -23,27 +29,38 @@ const queryClient = new QueryClient({
 });
 
 /**
- * App - Activity Platform
+ * App - Activity Platform (Best-in-Class Architecture)
  *
- * MainNavigator bevat:
- * - Top header: Logo, Search, Filter, Profile & More
- * - Bottom tabs: Activiteiten, Chats, Agenda, Meldingen, Moatjes
- * - Lucide icons, brand colors (#E6001A primary, #FFF3F4 accent)
+ * Features:
+ * ✅ Production-ready authentication flow
+ * ✅ Persistent auth state (survives app restarts)
+ * ✅ Automatic token refresh
+ * ✅ Error boundaries for crash prevention
+ * ✅ Offline detection and handling
+ * ✅ Type-safe navigation throughout
+ *
+ * Architecture:
+ * - RootNavigator: Auth guard (AuthScreen vs MainNavigator)
+ * - MainNavigator: Bottom tabs (Activiteiten, Chats, Agenda, etc.)
+ * - Brand colors: #E6001A primary, #FFF3F4 accent
  */
 export default function App() {
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <NavigationContainer>
-            <MainNavigator />
-          </NavigationContainer>
-          <StatusBar style="auto" />
-          {/* Debug Panel - Only visible in DEV mode */}
-          <DebugPanel />
-        </QueryClientProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={styles.container}>
+        <SafeAreaProvider>
+          <QueryClientProvider client={queryClient}>
+            <NavigationContainer>
+              <RootNavigator />
+              <OfflineBanner />
+            </NavigationContainer>
+            <StatusBar style="auto" />
+            {/* Debug Panel - Only visible in DEV mode */}
+            {__DEV__ && <DebugPanel />}
+          </QueryClientProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }
 

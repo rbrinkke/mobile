@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../services/authApi';
-// import { authService } from '@services/auth/authService'; // TODO: Create authService
+import { authService } from '@services/auth/authService';
+import { useAuthStore, type AuthStore } from '@stores/authStore';
 import { queryKeys } from '@api/queryKeys';
 import type {
   RegisterRequest,
@@ -15,11 +16,13 @@ import type {
 /**
  * Authentication hooks using TanStack Query
  *
- * Features:
- * - Optimistic updates
- * - Automatic token storage
- * - Error handling
- * - Loading states
+ * Best-in-class features:
+ * ✅ Automatic token storage via authService
+ * ✅ Auth store updates for reactive UI
+ * ✅ Optimistic updates where applicable
+ * ✅ Comprehensive error handling
+ * ✅ Query invalidation for fresh data
+ * ✅ Loading states via TanStack Query
  */
 
 /**
@@ -40,59 +43,85 @@ export function useRegister() {
 
 /**
  * Verify email code mutation
+ * After verification, stores tokens and updates auth store
  */
 export function useVerifyCode() {
   const queryClient = useQueryClient();
+  const setAuthenticated = useAuthStore((state: AuthStore) => state.setAuthenticated);
 
   return useMutation({
     mutationFn: (data: VerifyCodeRequest) => authApi.verifyCode(data),
     onSuccess: async (response) => {
-      // TODO: Store tokens using authService when available
-      // await authService.storeTokens(
-      //   response.access_token,
-      //   response.refresh_token
-      // );
-      console.log('Tokens received:', { access: response.access_token.substring(0, 20) + '...' });
+      // Store tokens via authService
+      authService.storeTokens(response.access_token, response.refresh_token);
 
-      // Invalidate auth queries
+      // Extract user info from token
+      const authState = authService.getAuthState();
+
+      if (authState.userId && authState.email) {
+        // Update auth store (triggers navigation to app)
+        setAuthenticated({
+          id: authState.userId,
+          email: authState.email,
+        });
+      }
+
+      // Invalidate auth queries for fresh data
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
 
-      console.log('Email verified successfully');
+      if (__DEV__) {
+        console.log('✅ Email verified - tokens stored');
+      }
     },
     onError: (error: any) => {
-      console.error('Verification failed:', error);
+      console.error('❌ Verification failed:', error);
     },
   });
 }
 
 /**
  * Login mutation
+ * Handles different response types: direct login, 2FA, org selection
  */
 export function useLogin() {
   const queryClient = useQueryClient();
+  const setAuthenticated = useAuthStore((state: AuthStore) => state.setAuthenticated);
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
     onSuccess: async (response: LoginResponse) => {
-      // Only store tokens if we got TokenResponse
+      // Only store tokens if we got TokenResponse (direct login success)
       if (response.type === 'success') {
         const tokenResponse = response as TokenResponse;
-        // TODO: Store tokens using authService when available
-        // await authService.storeTokens(
-        //   tokenResponse.access_token,
-        //   tokenResponse.refresh_token
-        // );
-        console.log('Tokens received:', { access: tokenResponse.access_token.substring(0, 20) + '...' });
 
-        // Invalidate auth queries
+        // Store tokens via authService
+        authService.storeTokens(
+          tokenResponse.access_token,
+          tokenResponse.refresh_token
+        );
+
+        // Extract user info from token
+        const authState = authService.getAuthState();
+
+        if (authState.userId && authState.email) {
+          // Update auth store (triggers navigation to app)
+          setAuthenticated({
+            id: authState.userId,
+            email: authState.email,
+          });
+        }
+
+        // Invalidate auth queries for fresh data
         queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
 
-        console.log('Login successful');
+        if (__DEV__) {
+          console.log('✅ Login successful - tokens stored');
+        }
       }
-      // For code_sent or org_selection, let UI handle the flow
+      // For code_sent or org_selection, let useAuthFlow handle the UI flow
     },
     onError: (error: any) => {
-      console.error('Login failed:', error);
+      console.error('❌ Login failed:', error);
     },
   });
 }
@@ -130,26 +159,30 @@ export function useResetPassword() {
 
 /**
  * Logout mutation
+ * Clears tokens, user data, and all cached queries
  */
 export function useLogout() {
   const queryClient = useQueryClient();
+  const logout = useAuthStore((state: AuthStore) => state.logout);
 
   return useMutation({
     mutationFn: () => authApi.logout(),
     onSuccess: async () => {
-      // TODO: Clear tokens using authService when available
-      // await authService.clearTokens();
+      // Logout via auth store (clears tokens via authService)
+      await logout();
 
-      // Clear all cached data
+      // Clear all cached query data
       queryClient.clear();
 
-      console.log('Logout successful');
+      if (__DEV__) {
+        console.log('✅ Logout successful');
+      }
     },
     onError: async (error: any) => {
-      console.error('Logout failed:', error);
+      console.error('❌ Logout API call failed:', error);
 
-      // TODO: Clear tokens anyway
-      // await authService.clearTokens();
+      // Clear local state anyway (fail safely)
+      await logout();
       queryClient.clear();
     },
   });
@@ -157,8 +190,8 @@ export function useLogout() {
 
 /**
  * Check if user is authenticated
+ * Uses optimized Zustand selector for performance
  */
 export function useIsAuthenticated(): boolean {
-  // TODO: Implement with authService when available
-  return false;
+  return useAuthStore((state: AuthStore) => state.isAuthenticated);
 }

@@ -11,8 +11,8 @@
  */
 
 import { storage } from '@api/storage';
-import apiClient from '@api/client';
-import { jwtDecode } from 'jwt-decode';
+import apiClient, { setAuthToken, clearAuthToken as clearApiToken } from '@api/client';
+import jwtDecode from 'jwt-decode';
 
 // ============================================================================
 // Types
@@ -51,15 +51,14 @@ class AuthService {
 
   /**
    * Initialize authentication service
-   * - Sets up API interceptors
+   * - Sets auth token in API client
    * - Schedules proactive token refresh
    */
   async initialize(): Promise<void> {
-    this.setupApiInterceptors();
-
-    // Schedule proactive refresh if token exists
+    // Set token in API client if exists
     const accessToken = this.getAccessToken();
     if (accessToken) {
+      setAuthToken(accessToken);
       this.scheduleTokenRefresh(accessToken);
     }
 
@@ -67,50 +66,27 @@ class AuthService {
   }
 
   /**
-   * Setup API interceptors for automatic token refresh
+   * Store tokens directly (for use after verification, refresh, etc.)
+   * @param accessToken - JWT access token
+   * @param refreshToken - JWT refresh token
    */
-  private setupApiInterceptors(): void {
-    // Request interceptor: Add access token to headers
-    apiClient.interceptors.request.use(
-      (config) => {
-        const token = this.getAccessToken();
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+  storeTokens(accessToken: string, refreshToken: string): void {
+    // Store tokens in storage
+    this.setTokens(accessToken, refreshToken);
 
-    // Response interceptor: Handle 401 with token refresh
-    apiClient.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        const originalRequest = error.config;
+    // Set token in API client for authenticated requests
+    setAuthToken(accessToken);
 
-        // If 401 and not already retrying
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
+    // Extract user info from JWT
+    const payload = this.decodeToken(accessToken);
+    this.setUserInfo(payload.sub, payload.email || '');
 
-          try {
-            // Attempt token refresh
-            const newAccessToken = await this.refreshAccessToken();
+    // Schedule proactive refresh
+    this.scheduleTokenRefresh(accessToken);
 
-            // Update authorization header
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-            // Retry original request
-            return apiClient(originalRequest);
-          } catch (refreshError) {
-            // Refresh failed - logout user
-            this.logout();
-            throw refreshError;
-          }
-        }
-
-        return Promise.reject(error);
-      }
-    );
+    if (__DEV__) {
+      console.log('✅ Tokens stored:', { userId: payload.sub, email: payload.email });
+    }
   }
 
   /**
@@ -118,22 +94,18 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<AuthState> {
     try {
-      const response = await apiClient.post<TokenPair>('/api/auth/login', {
+      const tokenPair = await apiClient.post<TokenPair>('/api/auth/login', {
         email,
         password,
       });
 
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken, refreshToken } = tokenPair;
 
       // Store tokens
-      this.setTokens(accessToken, refreshToken);
+      this.storeTokens(accessToken, refreshToken);
 
       // Extract user info from JWT
       const payload = this.decodeToken(accessToken);
-      this.setUserInfo(payload.sub, payload.email || email);
-
-      // Schedule proactive refresh
-      this.scheduleTokenRefresh(accessToken);
 
       if (__DEV__) console.log('✅ Login successful:', payload.sub);
 
@@ -198,14 +170,17 @@ class AuthService {
     }
 
     try {
-      const response = await apiClient.post<TokenPair>('/api/auth/refresh', {
+      const tokenPair = await apiClient.post<TokenPair>('/api/auth/refresh', {
         refreshToken,
       });
 
-      const { accessToken, refreshToken: newRefreshToken } = response.data;
+      const { accessToken, refreshToken: newRefreshToken } = tokenPair;
 
       // Store new tokens
       this.setTokens(accessToken, newRefreshToken);
+
+      // Set new token in API client
+      setAuthToken(accessToken);
 
       // Schedule next refresh
       this.scheduleTokenRefresh(accessToken);
@@ -346,11 +321,12 @@ class AuthService {
   }
 
   /**
-   * Clear tokens from storage
+   * Clear tokens from storage and API client
    */
   private clearTokens(): void {
     storage.delete(this.ACCESS_TOKEN_KEY);
     storage.delete(this.REFRESH_TOKEN_KEY);
+    clearApiToken(); // Clear from API client
   }
 
   /**
