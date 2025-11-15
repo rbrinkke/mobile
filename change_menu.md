@@ -4,7 +4,7 @@ Hier is een analyse van je vraag en de benodigde stappen:
 
 ### ⚙️ 1. Is je app al geconfigureerd?
 
-  * **Ja, voor navigatie:** Je project is al perfect opgezet voor "best practice" navigatie. Je hebt de `react-navigation` library al in gebruik, en er is zelfs een specifiek bestand voor de onderste balk: `src/navigation/BottomTabNavigator.tsx`.
+  * **Ja, voor navigatie:** Je project is al perfect opgezet voor "best practice" navigatie. Je hebt de `react-navigation` library al in gebruik, en er is een specifiek bestand: `src/navigation/MainNavigator.tsx` (bevat zowel top header als bottom tabs).
   * **Nee, nog niet voor deze iconen:** De HTML-mockup gebruikt **Lucide** iconen (zoals `activity`, `search`, `filter`, etc.). Om deze in React Native te gebruiken, moet je de `lucide-react-native` bibliotheek installeren.
 
 Voer dit commando uit in je projectmap om de iconen toe te voegen:
@@ -20,7 +20,7 @@ npm install lucide-react-native
 
 ### 📦 2. Je nieuwe navigatiebestanden
 
-Zoals je vroeg, heb ik alle benodigde code in één groot bestand gezet. Je kunt dit opslaan als een *nieuw* bestand (bijv. `src/navigation/MockupNavigator.tsx`) of de onderdelen gebruiken om je *bestaande* `src/navigation/BottomTabNavigator.tsx` aan te passen.
+Zoals je vroeg, heb ik alle benodigde code in één groot bestand gezet. Deze is nu geïmplementeerd in `src/navigation/MainNavigator.tsx` (voorheen BottomTabNavigator.tsx).
 
 Dit bestand bevat:
 

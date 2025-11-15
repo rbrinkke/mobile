@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   Search,
@@ -25,7 +25,11 @@ const CustomHeader = () => {
     <View style={styles.headerContainer}>
       {/* Logo */}
       <Pressable accessible accessibilityRole="button" accessibilityLabel="Home">
-        <Text style={styles.headerLogo}>LOGO</Text>
+        <Image
+          source={require('../../assets/logo.png')}
+          style={styles.headerLogo}
+          resizeMode="contain"
+        />
       </Pressable>
 
       {/* Header Icons */}
@@ -90,7 +94,7 @@ const PlaceholderScreen = ({ route }: PlaceholderScreenProps) => (
 // === TAB NAVIGATOR ===
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabNavigator() {
+export default function MainNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

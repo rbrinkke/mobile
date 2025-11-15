@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 
 // Navigation
-import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import MainNavigator from './src/navigation/MainNavigator';
 
 // Debug Panel (DEV only)
 import { DebugPanel } from '@shared/components/DebugPanel';
@@ -23,13 +23,12 @@ const queryClient = new QueryClient({
 });
 
 /**
- * App - Activity Platform with New Navigation Menu
+ * App - Activity Platform
  *
- * Features:
- * - Custom header with Logo, Search, Filter, Profile & More
- * - Bottom tab navigation: Activiteiten, Chats, Agenda, Meldingen, Moatjes
- * - Lucide icons for modern, consistent design
- * - Brand colors: #E6001A (primary) and #FFF3F4 (accent)
+ * MainNavigator bevat:
+ * - Top header: Logo, Search, Filter, Profile & More
+ * - Bottom tabs: Activiteiten, Chats, Agenda, Meldingen, Moatjes
+ * - Lucide icons, brand colors (#E6001A primary, #FFF3F4 accent)
  */
 export default function App() {
   return (
@@ -37,7 +36,7 @@ export default function App() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <NavigationContainer>
-            <BottomTabNavigator />
+            <MainNavigator />
           </NavigationContainer>
           <StatusBar style="auto" />
           {/* Debug Panel - Only visible in DEV mode */}
