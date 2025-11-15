@@ -16,143 +16,15 @@ import { apiClient } from '@/api/client';
  * Only renders in __DEV__ mode
  */
 export function DebugPanel() {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [networkStatus, setNetworkStatus] = useState<'online' | 'offline' | 'unknown'>('unknown');
-  const [apiTestStatus, setApiTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
-  const [apiTestMessage, setApiTestMessage] = useState('');
-
-  // Monitor network status
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setNetworkStatus(state.isConnected ? 'online' : 'offline');
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  // Test API connectivity
-  const testApiConnection = async () => {
-    setApiTestStatus('testing');
-    setApiTestMessage('Testing...');
-
-    try {
-      const startTime = Date.now();
-
-      // Try to hit the health endpoint
-      const response = await fetch(`${API_CONFIG.apiUrl}/health`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      const duration = Date.now() - startTime;
-
-      if (response.ok) {
-        setApiTestStatus('success');
-        setApiTestMessage(`✅ Connected! (${duration}ms)`);
-      } else {
-        setApiTestStatus('error');
-        setApiTestMessage(`❌ HTTP ${response.status}`);
-      }
-    } catch (error: any) {
-      setApiTestStatus('error');
-      setApiTestMessage(`❌ ${error.message || 'Connection failed'}`);
-    }
-  };
-
-  // Don't render in production
-  if (!__DEV__) {
-    return null;
-  }
-
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <Pressable
-        style={styles.header}
-        onPress={() => setIsExpanded(!isExpanded)}
-      >
-        <Text style={styles.headerText}>
-          🔧 DEBUG PANEL {isExpanded ? '▼' : '▶'}
-        </Text>
-        <View style={[
-          styles.statusDot,
-          networkStatus === 'online' && styles.statusOnline,
-          networkStatus === 'offline' && styles.statusOffline,
-        ]} />
-      </Pressable>
-
-      {/* Expanded Content */}
-      {isExpanded && (
-        <ScrollView style={styles.content}>
-          {/* API Configuration */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🌐 API Configuration</Text>
-            <Text style={styles.infoText}>URL: {API_CONFIG.apiUrl}</Text>
-            <Text style={styles.infoText}>Timeout: {API_CONFIG.requestTimeout}ms</Text>
-            <Text style={styles.infoText}>Max Retries: {API_CONFIG.maxRetries}</Text>
-          </View>
-
-          {/* Network Status */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📡 Network Status</Text>
-            <Text style={[
-              styles.infoText,
-              networkStatus === 'online' && styles.textSuccess,
-              networkStatus === 'offline' && styles.textError,
-            ]}>
-              Status: {networkStatus.toUpperCase()}
-            </Text>
-          </View>
-
-          {/* API Connectivity Test */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🧪 API Connectivity</Text>
-            <Pressable
-              style={[
-                styles.testButton,
-                apiTestStatus === 'testing' && styles.testButtonDisabled,
-              ]}
-              onPress={testApiConnection}
-              disabled={apiTestStatus === 'testing'}
-            >
-              <Text style={styles.testButtonText}>
-                {apiTestStatus === 'testing' ? 'Testing...' : 'Test Connection'}
-              </Text>
-            </Pressable>
-            {apiTestMessage && (
-              <Text style={[
-                styles.testResult,
-                apiTestStatus === 'success' && styles.textSuccess,
-                apiTestStatus === 'error' && styles.textError,
-              ]}>
-                {apiTestMessage}
-              </Text>
-            )}
-          </View>
-
-          {/* Environment Info */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>ℹ️  Environment</Text>
-            <Text style={styles.infoText}>Mode: {__DEV__ ? 'DEVELOPMENT' : 'PRODUCTION'}</Text>
-            <Text style={styles.infoText}>Platform: {require('react-native').Platform.OS}</Text>
-          </View>
-
-          {/* Instructions */}
-          <View style={styles.section}>
-            <Text style={styles.infoText} style={[styles.infoText, { fontSize: 11, color: '#666', fontStyle: 'italic' }]}>
-              💡 All API requests are logged to console with full details
-            </Text>
-          </View>
-        </ScrollView>
-      )}
-    </View>
-  );
+  // TEMPORARY: Disabled to debug tab bar visibility
+  // TODO: Re-enable after fixing tab bar overlap issue
+  return null;
 }
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 64, // Account for bottom tab navigation height
     left: 0,
     right: 0,
     backgroundColor: '#1a1a1a',

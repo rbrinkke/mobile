@@ -151,9 +151,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   headerLogo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: PRIMARY_COLOR,
+    width: 120,
+    height: 40,
   },
   headerIconsContainer: {
     flexDirection: 'row',
@@ -197,7 +196,7 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -14,6 +14,41 @@ AI guidance for React Native/Expo development with **feature-based architecture*
 - **Expo Image 1.10+** (optimized caching)
 - **Reanimated 3.x** (60 FPS animations)
 
+## 🚨 CRITICAL: Smart Debugging & Monitoring
+
+**See [DEBUGGING-GUIDE.md](./DEBUGGING-GUIDE.md) for complete strategies.**
+
+### Never Settle For Less - Best Practices 🏆
+
+**DON'T do this (inefficient):**
+```bash
+# ❌ Blind waiting without feedback
+npm run web
+sleep 120  # Hope it works...
+```
+
+**DO this instead (intelligent monitoring):**
+```bash
+# ✅ Smart monitoring with real-time feedback
+npx expo start --web --clear
+
+# In parallel: Monitor bundling status
+BashOutput with filter="Bundled|ERROR"
+
+# Check server readiness
+curl -s http://localhost:8081 | head -1
+
+# Count running processes
+ps aux | grep -E "expo|metro" | grep -v grep
+```
+
+### Key Principles
+1. **Verify First** - Always confirm file changes before testing
+2. **Smart Monitoring** - Use filtered output, don't scan thousands of lines
+3. **Parallel Checks** - Run multiple verifications simultaneously
+4. **Intelligent Polling** - Test endpoints, don't blindly wait
+5. **Cache Clearing** - Clear Metro/Expo cache when bundler fails: `rm -rf /tmp/metro-* /tmp/haste-map-* .expo`
+
 ## 📁 Architecture: Feature-Based Organization
 
 **See [ARCHITECTURE.md](./ARCHITECTURE.md) for complete details.**
