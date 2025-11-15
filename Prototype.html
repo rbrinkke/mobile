@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- De titel is nu generiek -->
+    <title>Activiteiten App - Mobile Mockup</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons Script for easy rendering -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Definieer de app kleuren in Tailwind's configuratie */
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                // Primaire kleur: De krachtige rode kleur (#E6001A)
+                'primary-color': '#E6001A',
+                // Licht accent voor lichte achtergronden
+                'light-accent': '#FFF3F4',
+              },
+            }
+          }
+        }
+        
+        /* Standaard lettertype */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        /* Zorgt ervoor dat de vaste navigatie niet wordt bedekt door de inhoud */
+        .main-content {
+            padding-top: 64px; /* Hoogte van de top navigatie (h-16) */
+            padding-bottom: 64px; /* Hoogte van de bottom navigatie (h-16) */
+            min-height: 100vh;
+        }
+        /* Stijl voor de actieve knop in de navigatiebalk */
+        .nav-item:hover, .nav-item.active {
+            color: #E6001A; /* De primaire rode kleur bij hover/actief */
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- HOOFD CONTAINER: Beperkt de breedte voor een mobiel gevoel -->
+    <div class="max-w-md mx-auto bg-white shadow-xl min-h-screen relative">
+
+        <!-- 1. VASTE TOP NAVIGATIE BALK (Header) -->
+        <header class="fixed top-0 w-full max-w-md h-16 bg-white border-b border-gray-100 z-10 flex items-center justify-between px-4">
+            
+            <!-- Logo/Home Link -->
+            <a href="#" class="flex items-center space-x-2">
+                <!-- Programmeur: Plaats hier het LOGO, bijvoorbeeld een <img> tag -->
+                <span class="text-2xl font-bold text-primary-color">LOGO</span>
+            </a>
+            
+            <!-- Top Navigatie Iconen -->
+            <div class="flex items-center space-x-3">
+                
+                <!-- Zoeken -->
+                <button class="p-2 text-gray-500 hover:text-primary-color rounded-full transition duration-150">
+                    <i data-lucide="search" class="w-6 h-6"></i>
+                </button>
+
+                <!-- Filter -->
+                <button class="p-2 text-gray-500 hover:text-primary-color rounded-full transition duration-150">
+                    <i data-lucide="filter" class="w-6 h-6"></i>
+                </button>
+
+                <!-- Profiel (Rondje met Foto/Icoon) -->
+                <button class="relative w-9 h-9">
+                    <!-- De fallback/placeholder is nu in een lichte rode kleur met rode rand -->
+                    <div class="w-full h-full bg-light-accent text-primary-color rounded-full flex items-center justify-center border-2 border-primary-color transition duration-150 hover:border-black">
+                        <i data-lucide="circle-user-round" class="w-5 h-5"></i>
+                    </div>
+                </button>
+
+                <!-- 3 Puntjes Menu (Meer Opties) -->
+                <button class="p-2 text-gray-500 hover:text-primary-color rounded-full transition duration-150">
+                    <i data-lucide="more-vertical" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- 2. HOOFD INHOUD GEBIED -->
+        <main class="main-content p-4">
+            <!-- Nu helemaal leeg, klaar voor de dynamische content van de programmeur. -->
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-4">Activiteiten Overzicht</h1>
+        </main>
+
+        <!-- 3. VASTE BODEM NAVIGATIE BALK (Tab Bar) -->
+        <nav class="fixed bottom-0 w-full max-w-md h-16 bg-white border-t border-gray-200 z-10">
+            <div class="flex h-full justify-around items-center">
+                
+                <!-- Activiteiten (Actief icoon is rood) -->
+                <a href="#" class="nav-item active flex flex-col items-center p-2 text-primary-color text-xs font-medium">
+                    <i data-lucide="activity" class="w-6 h-6 mb-1"></i>
+                    <span>Activiteiten</span>
+                </a>
+
+                <!-- Chats -->
+                <a href="#" class="nav-item flex flex-col items-center p-2 text-gray-500 text-xs font-medium">
+                    <i data-lucide="message-square" class="w-6 h-6 mb-1"></i>
+                    <span>Chats</span>
+                </a>
+
+                <!-- Agenda -->
+                <a href="#" class="nav-item flex flex-col items-center p-2 text-gray-500 text-xs font-medium">
+                    <i data-lucide="calendar" class="w-6 h-6 mb-1"></i>
+                    <span>Agenda</span>
+                </a>
+
+                <!-- Meldingen -->
+                <a href="#" class="nav-item flex flex-col items-center p-2 text-gray-500 text-xs font-medium">
+                    <i data-lucide="bell" class="w-6 h-6 mb-1"></i>
+                    <span>Meldingen</span>
+                </a>
+
+                <!-- Moatjes (Groep) -->
+                <a href="#" class="nav-item flex flex-col items-center p-2 text-gray-500 text-xs font-medium">
+                    <i data-lucide="users" class="w-6 h-6 mb-1"></i>
+                    <span>Moatjes</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Activeert Lucide na het laden van de pagina -->
+    <script>
+        window.onload = function() {
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
