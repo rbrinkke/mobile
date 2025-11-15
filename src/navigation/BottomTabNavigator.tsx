@@ -1,145 +1,212 @@
 import React from 'react';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  Search,
+  Filter,
+  CircleUserRound,
+  MoreVertical,
+  Activity,
+  MessageSquare,
+  Calendar,
+  Bell,
+  Users,
+} from 'lucide-react-native';
 
-// Screens
-import ActivityScreen from '../screens/ActivityScreen';
-import ForMeScreen from '../screens/ForMeScreen';
-import DiscoverScreen from '../screens/DiscoverScreen';
-import ChatsScreen from '../screens/ChatsScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+// === BRAND COLORS ===
+const PRIMARY_COLOR = '#E6001A';
+const LIGHT_ACCENT = '#FFF3F4';
+const GRAY_TEXT = '#6b7280';
+const INACTIVE_GRAY = '#9CA3AF';
 
-const Tab = createBottomTabNavigator();
-
-// Custom Tab Bar Icon with Badge
-interface TabIconProps {
-  emoji: string;
-  focused: boolean;
-  badge?: number;
-}
-
-function TabIcon({ emoji, focused, badge }: TabIconProps) {
+// === CUSTOM HEADER COMPONENT ===
+const CustomHeader = () => {
   return (
-    <View style={styles.iconContainer}>
-      <Text style={[styles.icon, focused && styles.iconFocused]}>
-        {emoji}
-      </Text>
-      {badge && badge > 0 && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{badge > 99 ? '99+' : badge}</Text>
-        </View>
-      )}
+    <View style={styles.headerContainer}>
+      {/* Logo */}
+      <Pressable accessible accessibilityRole="button" accessibilityLabel="Home">
+        <Text style={styles.headerLogo}>LOGO</Text>
+      </Pressable>
+
+      {/* Header Icons */}
+      <View style={styles.headerIconsContainer}>
+        <Pressable
+          style={styles.headerIcon}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel="Zoeken"
+        >
+          <Search color={GRAY_TEXT} size={24} />
+        </Pressable>
+
+        <Pressable
+          style={styles.headerIcon}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel="Filter"
+        >
+          <Filter color={GRAY_TEXT} size={24} />
+        </Pressable>
+
+        {/* Profile Icon */}
+        <Pressable
+          style={styles.profileIconContainer}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel="Profiel"
+        >
+          <View style={styles.profileIconCircle}>
+            <CircleUserRound color={PRIMARY_COLOR} size={20} />
+          </View>
+        </Pressable>
+
+        <Pressable
+          style={styles.headerIcon}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel="Meer opties"
+        >
+          <MoreVertical color={GRAY_TEXT} size={24} />
+        </Pressable>
+      </View>
     </View>
   );
+};
+
+// === PLACEHOLDER SCREENS ===
+interface PlaceholderScreenProps {
+  route: { name: string };
 }
+
+const PlaceholderScreen = ({ route }: PlaceholderScreenProps) => (
+  <View style={styles.mainContent}>
+    <Text style={styles.mainContentTitle}>{route.name}</Text>
+    <Text style={styles.mainContentSubtitle}>
+      Dit scherm wordt later uitgewerkt met de echte functionaliteit.
+    </Text>
+  </View>
+);
+
+// === TAB NAVIGATOR ===
+const Tab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: '#FF6B6B', // Coral red - energetic and friendly
-        tabBarInactiveTintColor: '#999',
+      screenOptions={({ route }) => ({
+        // Custom header for all screens
+        header: () => <CustomHeader />,
+
+        // Tab bar styling
+        tabBarActiveTintColor: PRIMARY_COLOR,
+        tabBarInactiveTintColor: INACTIVE_GRAY,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
-      }}
+
+        // Tab bar icons
+        tabBarIcon: ({ color }) => {
+          const iconSize = 24;
+
+          switch (route.name) {
+            case 'Activiteiten':
+              return <Activity color={color} size={iconSize} />;
+            case 'Chats':
+              return <MessageSquare color={color} size={iconSize} />;
+            case 'Agenda':
+              return <Calendar color={color} size={iconSize} />;
+            case 'Meldingen':
+              return <Bell color={color} size={iconSize} />;
+            case 'Moatjes':
+              return <Users color={color} size={iconSize} />;
+            default:
+              return null;
+          }
+        },
+      })}
     >
-      <Tab.Screen
-        name="Activity"
-        component={ActivityScreen}
-        options={{
-          tabBarLabel: 'Activiteit',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="📍" focused={focused} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="ForMe"
-        component={ForMeScreen}
-        options={{
-          tabBarLabel: 'Voor mij',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="📋" focused={focused} badge={25} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Discover"
-        component={DiscoverScreen}
-        options={{
-          tabBarLabel: 'Ontdekken',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="🔍" focused={focused} badge={51} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Chats"
-        component={ChatsScreen}
-        options={{
-          tabBarLabel: 'Chats',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="💬" focused={focused} badge={31} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: 'Profiel',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="👤" focused={focused} />
-          ),
-        }}
-      />
+      <Tab.Screen name="Activiteiten" component={PlaceholderScreen} />
+      <Tab.Screen name="Chats" component={PlaceholderScreen} />
+      <Tab.Screen name="Agenda" component={PlaceholderScreen} />
+      <Tab.Screen name="Meldingen" component={PlaceholderScreen} />
+      <Tab.Screen name="Moatjes" component={PlaceholderScreen} />
     </Tab.Navigator>
   );
 }
 
+// === STYLES ===
 const styles = StyleSheet.create({
+  // Header Styles
+  headerContainer: {
+    height: 64,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  headerLogo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: PRIMARY_COLOR,
+  },
+  headerIconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerIcon: {
+    padding: 8,
+  },
+  profileIconContainer: {
+    width: 36,
+    height: 36,
+    marginHorizontal: 4,
+  },
+  profileIconCircle: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: LIGHT_ACCENT,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: PRIMARY_COLOR,
+  },
+
+  // Tab Bar Styles
   tabBar: {
-    height: 60,
-    paddingBottom: 8,
-    paddingTop: 8,
+    height: 64,
+    backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-    backgroundColor: '#FFFFFF',
+    borderTopColor: '#e5e7eb',
+    paddingTop: 4,
+    paddingBottom: 4,
   },
   tabBarLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
+    marginBottom: 4,
   },
-  iconContainer: {
-    position: 'relative',
-    width: 32,
-    height: 32,
+
+  // Main Content Styles
+  mainContent: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#f9fafb',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  icon: {
-    fontSize: 24,
-    opacity: 0.6,
+  mainContentTitle: {
+    fontSize: 30,
+    fontWeight: '800',
+    color: '#1f2937',
+    marginBottom: 8,
   },
-  iconFocused: {
-    opacity: 1,
-  },
-  badge: {
-    position: 'absolute',
-    top: -4,
-    right: -8,
-    backgroundColor: '#FF6B6B',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-  },
-  badgeText: {
-    color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: 'bold',
+  mainContentSubtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    paddingHorizontal: 32,
   },
 });

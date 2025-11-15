@@ -51,6 +51,7 @@
     "expo-notifications": "^0.32.12",
     "expo-status-bar": "~3.0.8",
     "jwt-decode": "^4.0.0",
+    "lucide-react-native": "^0.553.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.54.2",

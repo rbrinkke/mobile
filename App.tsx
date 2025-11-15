@@ -3,10 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 
-// Auth Screen
-import { AuthScreen } from '@features/auth';
+// Navigation
+import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 
 // Debug Panel (DEV only)
 import { DebugPanel } from '@shared/components/DebugPanel';
@@ -22,17 +23,22 @@ const queryClient = new QueryClient({
 });
 
 /**
- * App - Testing Auth with REAL Auth-API Backend (port 8000)
+ * App - Activity Platform with New Navigation Menu
  *
- * Now connected to the correct backend with VISIBLE inputs! 🎯
- * Function > Beauty 👑
+ * Features:
+ * - Custom header with Logo, Search, Filter, Profile & More
+ * - Bottom tab navigation: Activiteiten, Chats, Agenda, Meldingen, Moatjes
+ * - Lucide icons for modern, consistent design
+ * - Brand colors: #E6001A (primary) and #FFF3F4 (accent)
  */
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <AuthScreen />
+          <NavigationContainer>
+            <BottomTabNavigator />
+          </NavigationContainer>
           <StatusBar style="auto" />
           {/* Debug Panel - Only visible in DEV mode */}
           <DebugPanel />
