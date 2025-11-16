@@ -32,11 +32,19 @@ export function EmailVerificationScreen({
     mutationFn: authApi.verifyEmail,
     onSuccess: () => {
       console.log('✅ Email verified successfully');
-      onVerificationSuccess?.();
+      // Give user visual feedback before navigation
+      setTimeout(() => {
+        onVerificationSuccess?.();
+      }, 800); // 800ms delay to show success state
     },
     onError: (error: any) => {
       const errorMessage = error.response?.data?.detail || error.message;
+      console.log('❌ Email verification failed:', errorMessage);
       setError(errorMessage);
+      // Clear code inputs on error for retry
+      setCode(['', '', '', '', '', '']);
+      // Focus first input for easy retry
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
     },
   });
 
@@ -152,14 +160,22 @@ export function EmailVerificationScreen({
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
+        {verifyMutation.isSuccess && (
+          <View style={styles.successIndicator}>
+            <Text style={styles.successText}>✓ E-mail geverifieerd!</Text>
+          </View>
+        )}
+
         <TouchableOpacity
-          style={[styles.button, verifyMutation.isPending && styles.buttonDisabled]}
+          style={[styles.button, (verifyMutation.isPending || verifyMutation.isSuccess) && styles.buttonDisabled]}
           onPress={() => handleVerify()}
-          disabled={verifyMutation.isPending || code.join('').length !== 6}
+          disabled={verifyMutation.isPending || verifyMutation.isSuccess || code.join('').length !== 6}
           activeOpacity={0.8}
         >
           {verifyMutation.isPending ? (
             <ActivityIndicator color="#fff" />
+          ) : verifyMutation.isSuccess ? (
+            <Text style={styles.buttonText}>✓ GELUKT</Text>
           ) : (
             <Text style={styles.buttonText}>VERIFIEER</Text>
           )}
@@ -258,6 +274,19 @@ const styles = StyleSheet.create({
     marginTop: -16,
     marginBottom: 16,
     textAlign: 'center',
+  },
+  successIndicator: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 16,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  successText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   button: {
     backgroundColor: TWENTS_RED,

@@ -38,11 +38,19 @@ export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegiste
     mutationFn: authApi.verifyLoginCode,
     onSuccess: (data) => {
       console.log('✅ Login code verified successfully');
-      onLoginSuccess?.();
+      // Give user visual feedback before navigation
+      setTimeout(() => {
+        onLoginSuccess?.();
+      }, 800); // 800ms delay to show success state
     },
     onError: (error: any) => {
       const errorMessage = error.response?.data?.detail || error.message;
+      console.log('❌ Login code verification failed:', errorMessage);
       setErrors(prev => ({ ...prev, code: errorMessage }));
+      // Clear code inputs on error for retry
+      setCode(['', '', '', '', '', '']);
+      // Focus first input for easy retry
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
     },
   });
 
@@ -292,14 +300,22 @@ export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegiste
 
             {errors.code ? <Text style={styles.errorText}>{errors.code}</Text> : null}
 
+            {verifyCodeMutation.isSuccess && (
+              <View style={styles.successIndicator}>
+                <Text style={styles.successText}>✓ Code geverifieerd!</Text>
+              </View>
+            )}
+
             <TouchableOpacity
-              style={[styles.button, verifyCodeMutation.isPending && styles.buttonDisabled]}
+              style={[styles.button, (verifyCodeMutation.isPending || verifyCodeMutation.isSuccess) && styles.buttonDisabled]}
               onPress={() => handleVerifyCode()}
-              disabled={verifyCodeMutation.isPending || code.join('').length !== 6}
+              disabled={verifyCodeMutation.isPending || verifyCodeMutation.isSuccess || code.join('').length !== 6}
               activeOpacity={0.8}
             >
               {verifyCodeMutation.isPending ? (
                 <ActivityIndicator color="#fff" />
+              ) : verifyCodeMutation.isSuccess ? (
+                <Text style={styles.buttonText}>✓ GELUKT</Text>
               ) : (
                 <Text style={styles.buttonText}>VERIFIËREN</Text>
               )}
@@ -499,6 +515,19 @@ const styles = StyleSheet.create({
   },
   codeInputError: {
     borderColor: ERROR_RED,
+  },
+  successIndicator: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 16,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  successText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   codeFooter: {
     flexDirection: 'row',
