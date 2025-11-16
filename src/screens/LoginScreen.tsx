@@ -14,10 +14,11 @@ import { useLogin } from '../hooks/useLogin';
 
 interface LoginScreenProps {
   onLoginSuccess?: () => void;
+  onLoginCodeSent?: (email: string, userId: string) => void;
   onSwitchToRegister?: () => void;
 }
 
-export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenProps) {
+export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegister }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -63,9 +64,19 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => {
-          console.log('✅ Login successful');
-          onLoginSuccess?.();
+        onSuccess: (data: any) => {
+          // Check if verification code was sent (multi-step login)
+          if (data.requires_code) {
+            console.log('✅ Login code sent, verification required');
+            onLoginCodeSent?.(data.email, data.user_id);
+          } else if (data.access_token) {
+            // Direct login success (tokens received)
+            console.log('✅ Login successful');
+            onLoginSuccess?.();
+          } else {
+            // Organization selection or other flow (future implementation)
+            console.log('⚠️ Unhandled login response type');
+          }
         },
         onError: (error: any) => {
           const errorMessage = error.response?.data?.detail || error.message;

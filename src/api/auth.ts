@@ -57,6 +57,28 @@ export const authApi = {
   },
 
   /**
+   * Verify login code (2FA-style verification during login)
+   */
+  verifyLoginCode: async (data: { user_id: string; code: string }): Promise<LoginResponse> => {
+    console.log('🔵 Verifying login code for user:', data.user_id);
+    const response = await apiClient.post<LoginResponse>(
+      '/api/auth/verify-login-code',
+      data
+    );
+    console.log('✅ Login code verified, tokens received');
+    return response.data;
+  },
+
+  /**
+   * Resend login verification code
+   */
+  resendLoginCode: async (email: string): Promise<void> => {
+    console.log('🔵 Resending login code to:', email);
+    await apiClient.post('/api/auth/resend-login-code', { email });
+    console.log('✅ Login code resent');
+  },
+
+  /**
    * Change password (requires authentication)
    */
   changePassword: async (data: PasswordChangeRequest): Promise<void> => {
