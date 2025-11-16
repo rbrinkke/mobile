@@ -19,9 +19,32 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  id: string;
-  email: string;
   message: string;
+  email: string;
+  user_id: string;
+  verification_token: string;  // Token for email verification
+}
+
+export interface LoginCodeSentResponse {
+  message: string;
+  email: string;
+  user_id: string;
+  requires_code: boolean;
+  expires_in: number;
+}
+
+export interface OrganizationSelectionResponse {
+  organizations: Array<{
+    id: string;
+    name: string;
+    role: string;
+  }>;
+  user_id: string;
+}
+
+export interface VerifyEmailRequest {
+  verification_token: string;
+  code: string;
 }
 
 export interface PasswordChangeRequest {

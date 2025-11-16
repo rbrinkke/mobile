@@ -39,6 +39,24 @@ export const authApi = {
   },
 
   /**
+   * Verify email with 6-digit code
+   */
+  verifyEmail: async (data: VerifyEmailRequest): Promise<void> => {
+    console.log('🔵 Sending email verification request');
+    await apiClient.post('/api/auth/verify-code', data);
+    console.log('✅ Email verified successfully');
+  },
+
+  /**
+   * Resend verification code
+   */
+  resendVerification: async (email: string): Promise<void> => {
+    console.log('🔵 Resending verification code to:', email);
+    await apiClient.post('/api/auth/resend-verification', { email });
+    console.log('✅ Verification code resent');
+  },
+
+  /**
    * Change password (requires authentication)
    */
   changePassword: async (data: PasswordChangeRequest): Promise<void> => {

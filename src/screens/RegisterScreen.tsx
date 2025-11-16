@@ -13,7 +13,7 @@ import {
 import { useRegister } from '../hooks/useRegister';
 
 interface RegisterScreenProps {
-  onRegisterSuccess?: () => void;
+  onRegisterSuccess?: (email: string, verificationToken: string) => void;
   onSwitchToLogin?: () => void;
 }
 
@@ -63,9 +63,9 @@ export function RegisterScreen({ onRegisterSuccess, onSwitchToLogin }: RegisterS
     registerMutation.mutate(
       { email, password },
       {
-        onSuccess: () => {
-          console.log('✅ Registration successful');
-          onRegisterSuccess?.();
+        onSuccess: (data) => {
+          console.log('✅ Registration successful, verification token received');
+          onRegisterSuccess?.(data.email, data.verification_token);
         },
         onError: (error: any) => {
           const errorMessage = error.response?.data?.detail || error.message;
