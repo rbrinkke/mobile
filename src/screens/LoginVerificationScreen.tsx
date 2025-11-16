@@ -54,7 +54,24 @@ export function LoginVerificationScreen({
   });
 
   const handleCodeChange = (text: string, index: number) => {
-    // Only allow single digit
+    // Check if pasted (multiple characters)
+    if (text.length > 1) {
+      // Paste detected! Extract 6 digits
+      const digits = text.replace(/[^0-9]/g, '').slice(0, 6);
+      if (digits.length === 6) {
+        // Fill all 6 inputs
+        const newCode = digits.split('');
+        setCode(newCode);
+        setError('');
+        // Focus last input
+        inputRefs.current[5]?.focus();
+        // Auto-submit
+        handleVerify(digits);
+        return;
+      }
+    }
+
+    // Normal single digit input
     const digit = text.replace(/[^0-9]/g, '').slice(-1);
 
     const newCode = [...code];
@@ -211,12 +228,13 @@ const styles = StyleSheet.create({
   },
   codeContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 24,
   },
   codeInput: {
-    width: 50,
-    height: 60,
+    width: 45,
+    height: 55,
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
     borderColor: BORDER_GRAY,
@@ -225,6 +243,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     color: DARK_GRAY,
+    marginHorizontal: 4,
   },
   codeInputFilled: {
     borderColor: TWENTS_RED,
