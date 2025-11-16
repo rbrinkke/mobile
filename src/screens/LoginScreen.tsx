@@ -18,9 +18,10 @@ interface LoginScreenProps {
   onLoginSuccess?: () => void;
   onLoginCodeSent?: (email: string, userId: string) => void;
   onSwitchToRegister?: () => void;
+  onForgotPassword?: () => void;
 }
 
-export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegister }: LoginScreenProps) {
+export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegister, onForgotPassword }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -254,6 +255,15 @@ export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegiste
 
         {!showCodeInput && (
           <TouchableOpacity
+            style={styles.forgotPasswordLink}
+            onPress={onForgotPassword}
+          >
+            <Text style={styles.forgotPasswordText}>Wachtwoord vergeten?</Text>
+          </TouchableOpacity>
+        )}
+
+        {!showCodeInput && (
+          <TouchableOpacity
             style={[styles.button, loginMutation.isPending && styles.buttonDisabled]}
             onPress={handleLogin}
             disabled={loginMutation.isPending}
@@ -452,6 +462,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 1,
+  },
+  forgotPasswordLink: {
+    alignItems: 'flex-end',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  forgotPasswordText: {
+    fontSize: 13,
+    color: TWENTS_RED,
+    fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',

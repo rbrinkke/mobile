@@ -9,6 +9,11 @@ import type {
   RegisterRequest,
   RegisterResponse,
   PasswordChangeRequest,
+  VerifyEmailRequest,
+  RequestPasswordResetRequest,
+  RequestPasswordResetResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
 } from '../types/auth';
 
 export const authApi = {
@@ -88,5 +93,31 @@ export const authApi = {
       data
     );
     console.log('✅ Password changed successfully');
+  },
+
+  /**
+   * Request password reset - sends 6-digit code to email
+   */
+  requestPasswordReset: async (data: RequestPasswordResetRequest): Promise<RequestPasswordResetResponse> => {
+    console.log('🔵 Requesting password reset for:', data.email);
+    const response = await apiClient.post<RequestPasswordResetResponse>(
+      '/api/auth/request-password-reset',
+      data
+    );
+    console.log('✅ Password reset code sent to email');
+    return response.data;
+  },
+
+  /**
+   * Reset password with code + new password
+   */
+  resetPassword: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    console.log('🔵 Resetting password with code');
+    const response = await apiClient.post<ResetPasswordResponse>(
+      '/api/auth/reset-password',
+      data
+    );
+    console.log('✅ Password reset successfully');
+    return response.data;
   },
 };

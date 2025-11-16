@@ -55,3 +55,23 @@ export interface PasswordChangeRequest {
 export interface ApiError {
   detail: string;
 }
+
+// Password Reset Types
+export interface RequestPasswordResetRequest {
+  email: string;
+}
+
+export interface RequestPasswordResetResponse {
+  message: string;
+  reset_token: string;  // Opaque token for reset flow
+}
+
+export interface ResetPasswordRequest {
+  reset_token: string;  // From request-password-reset response
+  code: string;         // 6-digit code from email
+  new_password: string; // New password
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+}
