@@ -10,20 +10,20 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import { useLogin } from '../hooks/useLogin';
+import { useRegister } from '../hooks/useRegister';
 
-interface LoginScreenProps {
-  onLoginSuccess?: () => void;
-  onSwitchToRegister?: () => void;
+interface RegisterScreenProps {
+  onRegisterSuccess?: () => void;
+  onSwitchToLogin?: () => void;
 }
 
-export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenProps) {
+export function RegisterScreen({ onRegisterSuccess, onSwitchToLogin }: RegisterScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ email: '', password: '' });
 
-  const loginMutation = useLogin();
+  const registerMutation = useRegister();
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,7 +52,7 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
     return true;
   };
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
 
@@ -60,16 +60,20 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
       return;
     }
 
-    loginMutation.mutate(
+    registerMutation.mutate(
       { email, password },
       {
         onSuccess: () => {
-          console.log('✅ Login successful');
-          onLoginSuccess?.();
+          console.log('✅ Registration successful');
+          onRegisterSuccess?.();
         },
         onError: (error: any) => {
           const errorMessage = error.response?.data?.detail || error.message;
-          setErrors(prev => ({ ...prev, password: errorMessage }));
+          if (errorMessage.toLowerCase().includes('exists')) {
+            setErrors(prev => ({ ...prev, email: 'Dit e-mailadres is al geregistreerd' }));
+          } else {
+            setErrors(prev => ({ ...prev, password: errorMessage }));
+          }
         },
       }
     );
@@ -81,11 +85,13 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.card}>
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Welkom terug</Text>
-          <Text style={styles.subtitle}>Log in op je account</Text>
+          <Text style={styles.title}>Maak je account</Text>
+          <Text style={styles.subtitle}>Welkom bij Activity Platform</Text>
         </View>
 
+        {/* Email Input */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>E-mailadres</Text>
           <TextInput
@@ -102,15 +108,18 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
             keyboardType="email-address"
             autoComplete="email"
           />
-          {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+          {errors.email ? (
+            <Text style={styles.errorText}>{errors.email}</Text>
+          ) : null}
         </View>
 
+        {/* Password Input */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Wachtwoord</Text>
           <View style={styles.passwordContainer}>
             <TextInput
               style={[styles.input, styles.passwordInput, errors.password ? styles.inputError : null]}
-              placeholder="••••••••"
+              placeholder="Minimaal 8 tekens"
               placeholderTextColor="#999"
               value={password}
               onChangeText={(text) => {
@@ -119,7 +128,7 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
               }}
               onBlur={() => validatePassword(password)}
               secureTextEntry={!showPassword}
-              autoComplete="password"
+              autoComplete="password-new"
             />
             <Pressable
               style={styles.eyeIcon}
@@ -128,26 +137,30 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
               <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
             </Pressable>
           </View>
-          {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+          {errors.password ? (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          ) : null}
         </View>
 
+        {/* Register Button */}
         <TouchableOpacity
-          style={[styles.button, loginMutation.isPending && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={loginMutation.isPending}
+          style={[styles.button, registerMutation.isPending && styles.buttonDisabled]}
+          onPress={handleRegister}
+          disabled={registerMutation.isPending}
           activeOpacity={0.8}
         >
-          {loginMutation.isPending ? (
+          {registerMutation.isPending ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>INLOGGEN</Text>
+            <Text style={styles.buttonText}>REGISTREREN</Text>
           )}
         </TouchableOpacity>
 
+        {/* Login Link */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Geen account? </Text>
-          <TouchableOpacity onPress={onSwitchToRegister}>
-            <Text style={styles.footerLink}>Registreer hier</Text>
+          <Text style={styles.footerText}>Heb je al een account? </Text>
+          <TouchableOpacity onPress={onSwitchToLogin}>
+            <Text style={styles.footerLink}>Log in</Text>
           </TouchableOpacity>
         </View>
       </View>

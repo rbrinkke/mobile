@@ -13,6 +13,22 @@ export interface LoginResponse {
   token_type: string;
 }
 
+export interface RegisterRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  id: string;
+  email: string;
+  message: string;
+}
+
+export interface PasswordChangeRequest {
+  current_password: string;
+  new_password: string;
+}
+
 export interface ApiError {
   detail: string;
 }
