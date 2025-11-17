@@ -14,7 +14,7 @@ import {
   useLogin,
   useRequestPasswordReset,
   useResetPassword,
-} from './useAuth.mock'; // Using mocks for now
+} from './useAuth'; // Using real implementations
 import {
   isTokenResponse,
   isLoginCodeSentResponse,

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { authApi } from '../services/authApi';
-import { authService } from '@services/auth/authService';
-import { useAuthStore, type AuthStore } from '@stores/authStore';
+import { authApi } from '@api/auth';
+import { authService } from '@services/authService';
+import { useAuthStore } from '@stores/authStore';
 import { queryKeys } from '@api/queryKeys';
 import type {
   RegisterRequest,
@@ -47,24 +47,12 @@ export function useRegister() {
  */
 export function useVerifyCode() {
   const queryClient = useQueryClient();
-  const setAuthenticated = useAuthStore((state: AuthStore) => state.setAuthenticated);
 
   return useMutation({
     mutationFn: (data: VerifyCodeRequest) => authApi.verifyCode(data),
     onSuccess: async (response) => {
-      // Store tokens via authService
+      // Store tokens via authService (automatically sets user from JWT)
       authService.storeTokens(response.access_token, response.refresh_token);
-
-      // Extract user info from token
-      const authState = authService.getAuthState();
-
-      if (authState.userId && authState.email) {
-        // Update auth store (triggers navigation to app)
-        setAuthenticated({
-          id: authState.userId,
-          email: authState.email,
-        });
-      }
 
       // Invalidate auth queries for fresh data
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
@@ -85,7 +73,6 @@ export function useVerifyCode() {
  */
 export function useLogin() {
   const queryClient = useQueryClient();
-  const setAuthenticated = useAuthStore((state: AuthStore) => state.setAuthenticated);
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
@@ -94,22 +81,11 @@ export function useLogin() {
       if (response.type === 'success') {
         const tokenResponse = response as TokenResponse;
 
-        // Store tokens via authService
+        // Store tokens via authService (automatically sets user from JWT)
         authService.storeTokens(
           tokenResponse.access_token,
           tokenResponse.refresh_token
         );
-
-        // Extract user info from token
-        const authState = authService.getAuthState();
-
-        if (authState.userId && authState.email) {
-          // Update auth store (triggers navigation to app)
-          setAuthenticated({
-            id: authState.userId,
-            email: authState.email,
-          });
-        }
 
         // Invalidate auth queries for fresh data
         queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
@@ -163,7 +139,7 @@ export function useResetPassword() {
  */
 export function useLogout() {
   const queryClient = useQueryClient();
-  const logout = useAuthStore((state: AuthStore) => state.logout);
+  const logout = useAuthStore((state) => state.logout);
 
   return useMutation({
     mutationFn: () => authApi.logout(),
@@ -193,5 +169,5 @@ export function useLogout() {
  * Uses optimized Zustand selector for performance
  */
 export function useIsAuthenticated(): boolean {
-  return useAuthStore((state: AuthStore) => state.isAuthenticated);
+  return useAuthStore((state) => state.isAuthenticated);
 }

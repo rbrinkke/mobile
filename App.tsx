@@ -10,6 +10,7 @@ import { LoginVerificationScreen } from './src/screens/LoginVerificationScreen';
 import { ForgotPasswordScreen } from './src/screens/ForgotPasswordScreen';
 import { PasswordResetCodeScreen } from './src/screens/PasswordResetCodeScreen';
 import MainNavigator from './src/navigation/MainNavigator';
+import { useAuthStore } from './src/stores/authStore';
 
 const queryClient = new QueryClient();
 
@@ -41,10 +42,13 @@ export default function App() {
     setCurrentScreen('login-verification');
   };
 
-  const handleLoginVerificationSuccess = (accessToken: string, refreshToken: string) => {
+  const handleLoginVerificationSuccess = (accessToken: string, refreshToken: string, expiresIn: number = 900) => {
     // After login code verified, user is logged in
     console.log('✅ Login verification complete, tokens received');
-    // TODO: Store tokens securely
+
+    // Store tokens securely in Zustand store with AsyncStorage persistence
+    useAuthStore.getState().setTokens(accessToken, refreshToken, expiresIn);
+
     setLoginVerificationData(null);
     setIsLoggedIn(true);
   };

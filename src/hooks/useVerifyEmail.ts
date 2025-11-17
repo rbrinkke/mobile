@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '../api/auth';
-import type { VerifyEmailRequest } from '../types/auth';
+import type { VerifyCodeRequest } from '@features/auth/types';
 
 export function useVerifyEmail() {
-  return useMutation<void, Error, VerifyEmailRequest>({
+  return useMutation<void, Error, VerifyCodeRequest>({
     mutationFn: authApi.verifyEmail,
   });
 }

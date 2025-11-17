@@ -145,7 +145,7 @@ export function PasswordResetCodeScreen({
             {code.map((digit, index) => (
               <TextInput
                 key={index}
-                ref={ref => (inputRefs.current[index] = ref)}
+                ref={ref => { inputRefs.current[index] = ref; }}
                 style={[
                   styles.codeInput,
                   digit ? styles.codeInputFilled : null,

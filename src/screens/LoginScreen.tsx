@@ -13,6 +13,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useLogin } from '../hooks/useLogin';
 import { authApi } from '../api/auth';
+import { useAuthStore } from '../stores/authStore';
 
 interface LoginScreenProps {
   onLoginSuccess?: () => void;
@@ -39,6 +40,15 @@ export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegiste
     mutationFn: authApi.verifyLoginCode,
     onSuccess: (data) => {
       console.log('✅ Login code verified successfully');
+
+      // Store tokens securely
+      const expiresIn = data.expires_in || 900; // Default 15 minutes
+      useAuthStore.getState().setTokens(
+        data.access_token,
+        data.refresh_token,
+        expiresIn
+      );
+
       // Give user visual feedback before navigation
       setTimeout(() => {
         onLoginSuccess?.();
@@ -291,7 +301,7 @@ export function LoginScreen({ onLoginSuccess, onLoginCodeSent, onSwitchToRegiste
               {code.map((digit, index) => (
                 <TextInput
                   key={index}
-                  ref={ref => (inputRefs.current[index] = ref)}
+                  ref={ref => { inputRefs.current[index] = ref; }}
                   style={[
                     styles.codeInput,
                     digit ? styles.codeInputFilled : null,

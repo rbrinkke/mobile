@@ -2,6 +2,8 @@
 
 # dependencies
 node_modules/
+node_modules/.pnpm
+.pnpm-store/
 
 # Expo
 .expo/
@@ -35,6 +37,13 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+.tsbuildinfo
+
+# Build and cache directories (CRITICAL for performance)
+.metro-cache/
+.jest-cache/
+.eslintcache
+node_modules/.cache/
 
 # generated native folders
 /ios

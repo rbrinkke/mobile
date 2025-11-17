@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '../api/auth';
+import { useAuthStore } from '../stores/authStore';
 
 interface EmailVerificationScreenProps {
   email: string;
@@ -29,9 +30,18 @@ export function EmailVerificationScreen({
   const inputRefs = useRef<Array<TextInput | null>>([]);
 
   const verifyMutation = useMutation({
-    mutationFn: authApi.verifyEmail,
-    onSuccess: () => {
+    mutationFn: authApi.verifyCode,
+    onSuccess: (data) => {
       console.log('✅ Email verified successfully');
+
+      // Store tokens securely after email verification
+      const expiresIn = data.expires_in || 900; // Default 15 minutes
+      useAuthStore.getState().setTokens(
+        data.access_token,
+        data.refresh_token,
+        expiresIn
+      );
+
       // Give user visual feedback before navigation
       setTimeout(() => {
         onVerificationSuccess?.();
@@ -141,7 +151,7 @@ export function EmailVerificationScreen({
           {code.map((digit, index) => (
             <TextInput
               key={index}
-              ref={ref => (inputRefs.current[index] = ref)}
+              ref={ref => { inputRefs.current[index] = ref; }}
               style={[
                 styles.codeInput,
                 digit ? styles.codeInputFilled : null,

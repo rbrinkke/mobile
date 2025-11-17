@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // DEVELOPMENT OPTIMIZATIONS (Use tsconfig.json for CI)
+
+    // Skip type checking of node_modules (HUGE speed boost)
+    "skipLibCheck": true,
+
+    // Enable incremental compilation (cache type information)
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+
+    // Relaxed type checking for development speed
+    // (CI will still catch these with strict tsconfig.json)
+    "noUncheckedIndexedAccess": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "exactOptionalPropertyTypes": false,
+
+    // Faster source maps for debugging
+    "sourceMap": true,
+    "inlineSourceMap": false
+  },
+
+  // Exclude test files and specs from type checking during dev
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx",
+    ".expo",
+    "dist",
+    "coverage"
+  ]
+}

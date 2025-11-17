@@ -4,9 +4,16 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
+    "start:clear": "expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "type-check": "tsc --project tsconfig.dev.json --noEmit",
+    "type-check:ci": "tsc --noEmit",
+    "type-check:watch": "tsc --project tsconfig.dev.json --noEmit --watch --preserveWatchOutput",
+    "lint": "eslint . --cache --cache-location .eslintcache --ext .ts,.tsx",
+    "lint:fix": "eslint . --cache --cache-location .eslintcache --ext .ts,.tsx --fix",
+    "lint:ci": "eslint . --ext .ts,.tsx --max-warnings 0"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -20,6 +27,7 @@
     "expo-haptics": "^15.0.7",
     "expo-modules-core": "~3.0.25",
     "expo-status-bar": "~3.0.8",
+    "jwt-decode": "^4.0.0",
     "lucide-react-native": "^0.553.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -34,7 +42,16 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/react": "~19.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-native": "^5.0.0",
+    "globals": "^16.5.0",
     "playwright": "^1.56.1",
     "typescript": "~5.9.2"
   },

@@ -8,13 +8,14 @@ import type {
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
+  VerifyCodeRequest,
+  VerifyCodeResponse,
   PasswordChangeRequest,
-  VerifyEmailRequest,
   RequestPasswordResetRequest,
   RequestPasswordResetResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
-} from '../types/auth';
+} from '@features/auth/types';
 
 export const authApi = {
   /**
@@ -46,10 +47,21 @@ export const authApi = {
   /**
    * Verify email with 6-digit code
    */
-  verifyEmail: async (data: VerifyEmailRequest): Promise<void> => {
+  verifyEmail: async (data: VerifyCodeRequest): Promise<void> => {
     console.log('🔵 Sending email verification request');
     await apiClient.post('/api/auth/verify-code', data);
     console.log('✅ Email verified successfully');
+  },
+
+  /**
+   * Verify email with 6-digit code (alias for verifyEmail)
+   * Returns tokens after successful verification
+   */
+  verifyCode: async (data: VerifyCodeRequest): Promise<VerifyCodeResponse> => {
+    console.log('🔵 Verifying email code');
+    const response = await apiClient.post<VerifyCodeResponse>('/api/auth/verify-code', data);
+    console.log('✅ Email verified, tokens received');
+    return response.data;
   },
 
   /**
@@ -63,10 +75,11 @@ export const authApi = {
 
   /**
    * Verify login code (2FA-style verification during login)
+   * Always returns tokens after successful verification
    */
-  verifyLoginCode: async (data: { user_id: string; code: string }): Promise<LoginResponse> => {
+  verifyLoginCode: async (data: { user_id: string; code: string }): Promise<VerifyCodeResponse> => {
     console.log('🔵 Verifying login code for user:', data.user_id);
-    const response = await apiClient.post<LoginResponse>(
+    const response = await apiClient.post<VerifyCodeResponse>(
       '/api/auth/verify-login-code',
       data
     );
@@ -119,5 +132,15 @@ export const authApi = {
     );
     console.log('✅ Password reset successfully');
     return response.data;
+  },
+
+  /**
+   * Logout user (optional API call - main logout is client-side)
+   */
+  logout: async (): Promise<void> => {
+    console.log('🔵 Logging out');
+    // Optional: Call logout endpoint to invalidate refresh tokens server-side
+    // await apiClient.post('/api/auth/logout');
+    console.log('✅ Logged out');
   },
 };

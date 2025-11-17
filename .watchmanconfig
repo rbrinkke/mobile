@@ -1,0 +1,14 @@
+{
+  "ignore_dirs": [
+    ".git",
+    "node_modules",
+    ".expo",
+    ".metro-cache",
+    ".jest-cache",
+    "coverage",
+    "dist",
+    "build",
+    ".tsbuildinfo",
+    ".eslintcache"
+  ]
+}

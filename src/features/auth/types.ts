@@ -35,6 +35,11 @@ export interface ResetPasswordRequest {
   new_password: string;
 }
 
+export interface PasswordChangeRequest {
+  current_password: string;
+  new_password: string;
+}
+
 // ============================================================================
 // API Response Types (Discriminated Unions)
 // ============================================================================
@@ -81,6 +86,7 @@ export interface VerifyCodeResponse {
 
 export interface RegisterResponse {
   message: string;
+  email: string;
   verification_token: string;
   user_id: string;
 }
