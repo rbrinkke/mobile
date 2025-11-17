@@ -329,24 +329,23 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 12,
+    gap: 14,
   },
   box: {
-    width: 48,
-    height: 56,
-    borderRadius: 12,
+    width: 52,
+    height: 60,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
     borderColor: '#E5E5EA',
-    // Shadow for depth
     ...Platform.select({
       ios: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
-        shadowRadius: 4,
+        shadowRadius: 8,
       },
       android: {
         elevation: 2,
@@ -360,13 +359,14 @@ const styles = StyleSheet.create({
     height: 1,
   },
   text: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '600',
     color: '#000000',
+    letterSpacing: 0.5,
   },
   cursor: {
     width: 2,
-    height: 24,
+    height: 26,
     backgroundColor: '#007AFF',
     borderRadius: 1,
   },

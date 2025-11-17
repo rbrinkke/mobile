@@ -238,23 +238,22 @@ export function AuthInput({
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: 20,
+    marginBottom: 4,
   },
   container: {
-    height: 56,
-    borderRadius: 12,
+    height: 58,
+    borderRadius: 14,
     borderWidth: 2,
-    borderColor: '#D1D5DB',  // Much more visible gray border!
-    backgroundColor: '#FFFFFF',  // Pure white background
-    paddingHorizontal: 16,
+    borderColor: '#D1D5DB',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 18,
     justifyContent: 'center',
-    // Shadow for depth - MORE VISIBLE
     ...Platform.select({
       ios: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
       },
       android: {
         elevation: 2,
@@ -263,19 +262,20 @@ const styles = StyleSheet.create({
   },
   label: {
     position: 'absolute',
-    left: 16,
+    left: 18,
     fontSize: 16,
-    fontWeight: '600',  // Bolder for visibility
-    color: '#6B7280',  // Darker gray - more visible!
-    backgroundColor: '#FFFFFF',  // White background so it stands out when floating
+    fontWeight: '600',
+    color: '#6B7280',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 4,
     transformOrigin: 'left center',
   },
   input: {
-    fontSize: 17,  // Slightly bigger
+    fontSize: 17,
     fontWeight: '500',
-    color: '#111827',  // Almost black - very visible!
-    paddingRight: 40, // Space for icon
+    color: '#111827',
+    paddingRight: 40,
+    letterSpacing: 0.1,
   },
   inputDisabled: {
     color: '#C7C7CC',
@@ -291,13 +291,14 @@ const styles = StyleSheet.create({
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 6,
-    marginLeft: 16,
+    marginTop: 8,
+    marginLeft: 18,
     gap: 6,
   },
   errorText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
     color: '#FF3B30',
+    lineHeight: 18,
   },
 });
